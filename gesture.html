@@ -80,12 +80,6 @@
             align-items: center;
         }
 
-        .control-item img {
-            width: 30px;
-            height: 30px;
-            margin-bottom: 5px;
-        }
-
         .control-item h3 {
             margin: 5px 0;
             font-size: 14px;
@@ -113,6 +107,16 @@
             height: 24px;
             margin-bottom: 5px;
         }
+
+        #flip-camera{
+            margin-top: 10px;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #ccc;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -126,6 +130,7 @@
         <div class="content">
             <div class="video-container">
                 <video id="camera-feed" autoplay playsinline></video>
+                <button id="flip-camera">Flip</button>
             </div>
 
             <div class="translation-box">
@@ -135,16 +140,14 @@
             <div class="controls">
                 <div class="control-item">
                     <a href="gesture2.html" style="text-decoration: none; color: black;">
-                    <img src="images/swap.png" alt="Change Mode">
-                    <h3>Change Mode</h3>
-                    <p>Text to sign language</p>
+                        <h3>Change Mode</h3>
+                        <p>Text to sign language</p>
                     </a>
                 </div>
                 <div class="control-item">
                     <a href="offline.html" style="text-decoration: none; color: black;">
-                    <img src="images/language.png" alt="Language Options">
-                    <h3>Language Options</h3>
-                    <p>Switch between different sign languages</p>
+                        <h3>Language Options</h3>
+                        <p>Switch between different sign languages</p>
                     </a>
                 </div>
             </div>
@@ -167,17 +170,26 @@
     </div>
 
     <script>
-        // Get the camera feed video element
         const cameraFeed = document.getElementById('camera-feed');
+        const flipCameraBtn = document.getElementById('flip-camera');
+        let facingMode = 'user';
 
-        // Request camera access
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                cameraFeed.srcObject = stream;
-            })
-            .catch(error => {
-                console.error('Error accessing camera:', error);
-            });
+        function startCamera(constraints) {
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(stream => {
+                    cameraFeed.srcObject = stream;
+                })
+                .catch(error => {
+                    console.error('Error accessing camera:', error);
+                });
+        }
+
+        startCamera({ video: { facingMode: facingMode } });
+
+        flipCameraBtn.addEventListener('click', () => {
+            facingMode = facingMode === 'user' ? 'environment' : 'user';
+            startCamera({ video: { facingMode: facingMode } });
+        });
     </script>
 </body>
 </html>
