@@ -173,10 +173,15 @@
         const cameraFeed = document.getElementById('camera-feed');
         const flipCameraBtn = document.getElementById('flip-camera');
         let facingMode = 'user';
+        let stream;
 
         function startCamera(constraints) {
             navigator.mediaDevices.getUserMedia(constraints)
-                .then(stream => {
+                .then(newStream => {
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+                    stream = newStream;
                     cameraFeed.srcObject = stream;
                 })
                 .catch(error => {
