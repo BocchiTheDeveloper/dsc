@@ -107,16 +107,6 @@
             height: 24px;
             margin-bottom: 5px;
         }
-
-        #flip-camera{
-            margin-top: 10px;
-            background: none;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            background-color: #ccc;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body>
@@ -130,7 +120,6 @@
         <div class="content">
             <div class="video-container">
                 <video id="camera-feed" autoplay playsinline></video>
-                <button id="flip-camera">Flip</button>
             </div>
 
             <div class="translation-box">
@@ -171,8 +160,6 @@
 
     <script>
         const cameraFeed = document.getElementById('camera-feed');
-        const flipCameraBtn = document.getElementById('flip-camera');
-        let facingMode = 'user';
         let stream;
 
         function startCamera(constraints) {
@@ -189,12 +176,7 @@
                 });
         }
 
-        startCamera({ video: { facingMode: facingMode } });
-
-        flipCameraBtn.addEventListener('click', () => {
-            facingMode = facingMode === 'user' ? 'environment' : 'user';
-            startCamera({ video: { facingMode: facingMode } });
-        });
+        startCamera({ video: { facingMode: 'environment' } }); // Use back camera by default.
     </script>
 </body>
 </html>
