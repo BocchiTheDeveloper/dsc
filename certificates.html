@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
+            height: 120vh; /* Increased height */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .profile-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .search-certificates {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .search-certificates input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .search-certificates button {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .downloaded-languages {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .download-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #ddd;
+            border-radius: 50%;
+            margin: 20px auto;
+        }
+
+        .no-languages {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .footer {
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            width: 100%;
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        footer a img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+        .list-section {
+            margin-top: 20px;
+        }
+
+        .list-section h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .list-item img {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .list-item-text {
+            flex-grow: 1;
+        }
+
+        .list-item-text h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .list-item-text p {
+            margin: 5px 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .list-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2></h2>
+            <span>Profile</span>
+            <h2></h2>
+        </div>
+        <div class="profile-info">
+            <img class="profile-image" src="images/man.png" alt="Profile">
+            <div class="profile-name">User <img src="images/diamond.png" alt="Diamond" class="profile-icon"></div>
+        </div>
+        <div class="search-certificates">
+            <input type="text" placeholder="Search">
+            <a href="profile.html"><button>Languages</button></a>
+        </div>
+        <div class="list-item checked" data-language="ASL American Sign Language">
+            <img src="images/certificate.png" alt="ASL">
+            <div class="list-item-text">
+                <h3>ASL Interpreter</h3>
+                <p>Completed on March 7, 2025. Representing approximately 300 hours of work.</p>
+            </div>
+            <img src="images/award.png" alt="Downloaded">
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <div class="footer">
+            <a href="home.html">
+                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+                Home
+            </a>
+            <a href="courses.html">
+                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+                Courses
+            </a>
+            <a href="profile.html">
+                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+                Profile
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language App - Gesture Recognition</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-container {
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #camera-feed {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .translation-box {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .control-item {
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-item img {
+            width: 30px;
+            height: 30px;
+            margin-bottom: 5px;
+        }
+
+        .control-item h3 {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .footer {
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer a img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2></h2>
+            <h2>Gesture Recognition</h2>
+            <h2></h2>
+        </div>
+
+        <div class="content">
+            <div class="video-container">
+                <video id="camera-feed" autoplay playsinline></video>
+            </div>
+
+            <div class="translation-box">
+                Translation
+            </div>
+
+            <div class="controls">
+                <div class="control-item">
+                    <a href="gesture2.html" style="text-decoration: none; color: black;">
+                    <img src="images/swap.png" alt="Change Mode">
+                    <h3>Change Mode</h3>
+                    <p>Text to sign language</p>
+                    </a>
+                </div>
+                <div class="control-item">
+                    <a href="offline.html" style="text-decoration: none; color: black;">
+                    <img src="images/language.png" alt="Language Options">
+                    <h3>Language Options</h3>
+                    <p>Switch between different sign languages</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <a href="home.html">
+                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+                Home
+            </a>
+            <a href="courses.html">
+                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+                Courses
+            </a>
+            <a href="profile.html">
+                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+                Profile
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Get the camera feed video element
+        const cameraFeed = document.getElementById('camera-feed');
+
+        // Request camera access
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                cameraFeed.srcObject = stream;
+            })
+            .catch(error => {
+                console.error('Error accessing camera:', error);
+            });
+    </script>
+</body>
+</html>

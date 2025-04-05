@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deafy App</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .header .notification {
+            position: relative;
+        }
+
+        .header .notification span {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+        }
+
+        .search-bar {
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+
+        .courses-section {
+            margin-bottom: 20px;
+        }
+
+        .courses-section h2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .courses-section .view-all {
+            color: #007bff;
+            font-size: 14px;
+        }
+
+        .course-list {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 10px; /* Space for scrollbar */
+        }
+
+        .course-tile {
+            min-width: 250px;
+            background-color: #ddd;
+            border-radius: 8px;
+            margin-right: 10px;
+            padding: 15px;
+            scroll-snap-align: start;
+            flex: 0 0 auto;
+        }
+
+        .course-tile:last-child {
+            margin-right: 0;
+        }
+
+        .course-tile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .course-tile h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .course-tile p {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .course-tile .details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .course-tile .details span {
+            display: flex;
+            align-items: center;
+        }
+
+        .course-tile .details span::before {
+            margin-right: 5px;
+        }
+
+        .footer {
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            width: 100%;
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+        }
+
+        footer a img {
+            width: 25px;
+            height: 25px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="images/deafy logo.png" alt="Deafy Logo">Deafy Certification Courses
+            <div class="notification">
+                <img src="images/notification.png" alt="Notification">
+                <span>2</span>
+            </div>
+        </div>
+
+        <div class="search-bar">
+            <img src="images/search.png" alt="Search" style="width: 15px;">
+            <input type="text" placeholder="Search courses">
+        </div>
+
+        <div class="courses-section">
+            <h2>Ongoing Courses <span class="view-all">View All</span></h2>
+            <div class="course-list">
+                <div class="course-tile" style="background-color: darkblue; color: white;">
+                    <img src="images/sign1.png" alt="Course Image" style="border: 1px solid white;">
+                    <h3>Introduction to Sign Language & Communication Tools</h3>
+                    <p style="color: white;">Overview of different sign languages (e.g., ASL, BSL).</p>
+                    <div class="details">
+                        <span><span style="font-size: 14px;">⏱️</span> 9 videos left</span>
+                    </div>
+                </div>
+                <div class="course-tile" style="background-color: cyan; color: darkblue;">
+                    <img src="images/sign1.png" alt="Course Image 2" style="border: 1px solid white;">
+                    <h3>Learning Alphabet</h3>
+                    <p style="color: darkblue;">Learn the basics of the alphabet in sign language.</p>
+                    <div class="details">
+                        <span><span style="font-size: 14px;">⏱️</span> 5 videos left</span>
+                    </div>
+                </div>
+                </div>
+        </div>
+
+        <div class="courses-section">
+            <h2>Saved Courses <span class="view-all">View All</span></h2>
+            <div class="course-list">
+                <div class="course-tile" style="background-color: orangered; color: white;">
+                    <img src="images/sign2.png">
+                    <h3>Greetings and Basic Phrases</h3>
+                    <p style="color: white;">Karlo Ganza</p>
+                    <div class="details">
+                        <span>Easy</span>
+                        <span>⭐ 4.7 (25)</span>
+                        <span><span style="font-size: 14px;">⏱️</span> 12h 52m</span>
+                        <span><span style="font-size: 14px;">📖</span> 14 Lessons</span>
+                        <span>$8</span>
+                    </div>
+                </div>
+                <div class="course-tile" style="background-color: yellow; color: darkred;">
+                    <img src="images/sign2.png">
+                    <h3>Advanced Phrases</h3>
+                    <p style="color: darkred;">Jhydd Mahinay</p>
+                    <div class="details">
+                        <span>Easy</span>
+                        <span>⭐ 4.8 (30)</span>
+                        <span><span style="font-size: 14px;">⏱️</span> 8h 52m</span>
+                        <span><span style="font-size: 14px;">📖</span> 10 Lessons</span>
+                        <span>$10</span>
+                    </div>
+                </div>
+                </div>
+        </div>
+
+        <div class="footer">
+            <a href="home.html">
+                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+                Home
+            </a>
+            <a href="courses.html">
+                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+                Courses
+            </a>
+            <a href="profile.html">
+                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+                Profile
+            </a>
+        </div>
+    </div>
+</body>
+</html>

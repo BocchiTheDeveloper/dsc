@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Page</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        .user-type {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+        }
+
+        .subscription-prompt {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .one-time-payment, .duration-options div {
+            background-color: #e0e0e0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .one-time-payment.selected, .duration-options div.selected {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .one-time-payment.selected strong,
+        .one-time-payment.selected span,
+        .duration-options div.selected strong,
+        .duration-options div.selected span {
+            color: white;
+        }
+
+        .one-time-payment strong, .duration-options strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .one-time-payment span, .duration-options span {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .unlimited-translation {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .unlimited-translation img {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+
+        .unlimited-translation p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .duration-options {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .duration-options div {
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .duration-options div:first-child {
+            margin-left: 0;
+        }
+
+        .duration-options div:last-child {
+            margin-right: 0;
+        }
+
+        .buy-button {
+            background-color: #2196f3;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .footer {
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            width: 100%; /* Ensure footer spans the entire width */
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px; /* Add horizontal margin for spacing */
+        }
+
+        footer a img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img class="profile-image" src="images/man.png" alt="Profile">
+        <div class="user-type">FREEMIUM USER</div>
+        <div class="subscription-prompt">Buy Subscription for less Hastle!</div>
+        <div class="one-time-payment" data-price="52">
+            <strong>One Time Payment</strong>
+            <span>Click Here!</span>
+            $ 52
+        </div>
+        <div class="unlimited-translation">
+            <img src="images/blue-check.png" alt="Check">
+            <p>Get access to Faster Translation, Educational Tools, and Multiple Languages</p>
+            ---
+        </div>
+        <div class="duration-options">
+            <div data-price="0.50">
+                <strong>1 week</strong>
+                <span>$ 0.50</span>
+            </div>
+            <div data-price="1.75">
+                <strong>1 month</strong>
+                <span>$ 1.75</span>
+            </div>
+            <div data-price="17">
+                <strong>1 year</strong>
+                <span>$ 17</span>
+            </div>
+        </div>
+        <button class="buy-button">$1.75 Buy Now</button>
+        <div class="footer">
+            <a href="home.html">
+                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+                Home
+            </a>
+            <a href="courses.html">
+                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+                Courses
+            </a>
+            <a href="profile.html">
+                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+                Profile
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const oneTimePayment = document.querySelector('.one-time-payment');
+        const durationOptions = document.querySelectorAll('.duration-options div');
+        const buyButton = document.querySelector('.buy-button');
+
+        function updateSelected(element) {
+            document.querySelectorAll('.one-time-payment, .duration-options div').forEach(el => {
+                el.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            buyButton.textContent = `$${element.dataset.price} Buy Now`;
+        }
+
+        oneTimePayment.addEventListener('click', () => {
+            updateSelected(oneTimePayment);
+        });
+
+        durationOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                updateSelected(option);
+            });
+        });
+    </script>
+</body>
+</html>

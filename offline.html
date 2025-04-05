@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language App - Offline Functionality</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
+            height: auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .header .dots {
+            font-size: 24px;
+            color: #888;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .text-section {
+            padding: 10px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .search-filter {
+            display: flex;
+            margin: 10px 0;
+        }
+
+        .search-filter input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .search-filter button {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+
+        .list-section {
+            margin-top: 20px;
+        }
+
+        .list-section h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .list-item img {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .list-item-text {
+            flex-grow: 1;
+        }
+
+        .list-item-text h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .list-item-text p {
+            margin: 5px 0;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .list-item button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .loading-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 5px;
+            background-color: #2196f3;
+            transition: width 5s linear;
+        }
+
+        .footer {
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        footer a img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2></h2>
+            <h2>Offline Functionality</h2>
+            <h2></h2>
+        </div>
+
+        <div class="content">
+            <div class="text-section">
+                Downloaded data sets are located in profile
+            </div>
+
+            <div class="search-filter">
+                <input type="text" id="filter-input" placeholder="Search">
+                <button id="filter-button">Filter</button>
+            </div>
+
+            <div class="list-section" id="language-list">
+                <h2>Download Sign Languages</h2>
+                <div class="list-item checked" data-language="ASL American Sign Language">
+                    <img src="images/deafy logo.png" alt="ASL">
+                    <div class="list-item-text">
+                        <h3>American Sign Language (ASL)</h3>
+                        <p>Used Primarily in the United States and Canada.</p>
+                    </div>
+                    <img src="images/check.png" alt="Downloaded">
+                </div>
+                <div class="list-item" data-language="BSL British Sign Language">
+                    <img src="images/deafy logo.png" alt="BSL">
+                    <div class="list-item-text">
+                        <h3>British Sign Language (BSL)</h3>
+                        <p>Used in the United Kingdom Completely different from ASL.</p>
+                    </div>
+                    <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
+                    <div class="loading-bar"></div>
+                </div>
+                <div class="list-item" data-language="LSF French Sign Language">
+                    <img src="images/deafy logo.png" alt="LSF">
+                    <div class="list-item-text">
+                        <h3>French Sign Language (LSF)</h3>
+                        <p>Used in France and French-speaking areas.</p>
+                    </div>
+                    <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
+                    <div class="loading-bar"></div>
+                </div>
+                <div class="list-item" data-language="JSL Japanese Sign Language">
+                    <img src="images/deafy logo.png" alt="JSL">
+                    <div class="list-item-text">
+                        <h3>Japanese Sign Language (JSL)</h3>
+                        <p>Used in Japan. Has its own unique features and cultural context.</p>
+                    </div>
+                    <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
+                    <div class="loading-bar"></div>
+                </div>
+                <div class="list-item" data-language="CSL Chinese Sign Language">
+                    <img src="images/deafy logo.png" alt="CSL">
+                    <div class="list-item-text">
+                        <h3>Chinese Sign Language (CSL)</h3>
+                        <p>Used in China with Regional Variations.</p>
+                    </div>
+                    <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
+                    <div class="loading-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <a href="home.html">
+                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+                Home
+            </a>
+            <a href="courses.html">
+                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+                Courses
+            </a>
+            <a href="profile.html">
+                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+                Profile
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const filterInput = document.getElementById('filter-input');
+        const filterButton = document.getElementById('filter-button');
+        const languageList = document.getElementById('language-list');
+
+        filterButton.addEventListener('click', () => {
+            const filterText = filterInput.value.trim().toLowerCase();
+            const listItems = languageList.querySelectorAll('.list-item');
+
+            listItems.forEach(item => {
+                const languageData = item.dataset.language.toLowerCase();
+                if (filterText === '' || languageData.includes(filterText)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        languageList.addEventListener('click', (event) => {
+            const downloadButton = event.target.closest('.download-button');
+            if (downloadButton) {
+                const listItem = downloadButton.closest('.list-item');
+                const loadingBar = downloadButton.nextElementSibling;
+                loadingBar.style.width = '100%';
+
+                setTimeout(() => {
+                    downloadButton.remove();
+                    listItem.innerHTML += '<img src="images/check.png" alt="Downloaded">';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
