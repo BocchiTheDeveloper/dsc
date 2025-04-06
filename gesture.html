@@ -48,7 +48,7 @@
             text-align: center;
             margin-bottom: 20px;
             position: relative;
-            aspect-ratio: 640 / 480;
+            aspect-ratio: 480 / 360; /* Adjust for lower resolution */
             overflow: hidden;
         }
 
@@ -122,21 +122,18 @@
 <body>
     <div class="container">
         <div class="header">
-        <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
+            <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
             <h2>Gesture Recognition</h2>
             <h2></h2>
         </div>
-
         <div class="content">
             <div class="video-container">
                 <video id="camera-feed" autoplay playsinline></video>
                 <canvas id="hand-canvas"></canvas>
             </div>
-
             <div class="translation-box" id="translation-output">
                 Translation
             </div>
-
             <div class="controls">
                 <div class="control-item">
                     <a href="gesture2.html" style="text-decoration: none; color: black;">
@@ -154,7 +151,6 @@
                 </div>
             </div>
         </div>
-
         <div class="footer">
             <a href="home.html">
                 <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
@@ -170,12 +166,10 @@
             </a>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-
     <script>
         const videoElement = document.getElementById('camera-feed');
         const canvasElement = document.getElementById('hand-canvas');
@@ -191,7 +185,6 @@
             const ring = landmarks[16];
             const pinky = landmarks[20];
 
-            // Basic peace sign check (very simplified)
             if (index.y < middle.y && middle.y < ring.y && ring.y < pinky.y && thumb.y > index.y) {
                 return "peace";
             }
@@ -228,9 +221,9 @@
         });
         hands.setOptions({
             maxNumHands: 2,
-            modelComplexity: 1,
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
+            modelComplexity: 0,
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.6,
         });
         hands.onResults(onResults);
 
@@ -238,26 +231,35 @@
             onFrame: async () => {
                 await hands.send({ image: videoElement });
             },
-            width: 640,
-            height: 480
+            width: 480,
+            height: 360,
         });
-        camera.start();
 
-        function startCamera(constraints) {
+        function startCamera() {
+            const constraints = {
+                video: {
+                    facingMode: { exact: 'environment' },
+                    width: { ideal: 480 },
+                    height: { ideal: 360 },
+                },
+            };
+
             navigator.mediaDevices.getUserMedia(constraints)
-                .then(newStream => {
-                    videoElement.srcObject = newStream;
+                .then(stream => {
+                    videoElement.srcObject = stream;
                     videoElement.addEventListener('loadeddata', () => {
                         canvasElement.width = videoElement.videoWidth;
                         canvasElement.height = videoElement.videoHeight;
+                        camera.start();
                     });
                 })
                 .catch(error => {
-                    console.error('Error accessing camera:', error);
+                    console.error('Camera access error:', error);
+                    alert('Camera access failed. Check console.');
                 });
         }
 
-        startCamera({ video: { facingMode: 'environment' } });
+        startCamera();
     </script>
 </body>
 </html>
