@@ -66,21 +66,6 @@
       pointer-events: none;
     }
 
-    .flip-btn-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .flip-btn {
-      background-color: #ffffffaa;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      padding: 6px 16px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
     .translation-box {
       background-color: #f0f0f0;
       border-radius: 10px;
@@ -149,10 +134,6 @@
         <canvas id="hand-canvas"></canvas>
       </div>
 
-      <div class="flip-btn-wrapper">
-        <button class="flip-btn" id="flip-camera">Flip Camera</button>
-      </div>
-
       <div class="translation-box" id="translation-output">Translation</div>
 
       <div class="controls">
@@ -191,8 +172,6 @@
     const canvasElement = document.getElementById('hand-canvas');
     const canvasCtx = canvasElement.getContext('2d');
     const translationOutput = document.getElementById('translation-output');
-    const flipBtn = document.getElementById('flip-camera');
-    let currentFacingMode = 'user';
     let camera;
 
     function detectGesture(landmarks) {
@@ -217,12 +196,18 @@
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
       if (results.multiHandLandmarks) {
+        let allGestures = [];
+
         for (const landmarks of results.multiHandLandmarks) {
           drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
           drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
           const gesture = detectGesture(landmarks);
-          translationOutput.textContent = gesture || "Translation";
+          if (gesture) {
+            allGestures.push(gesture);
+          }
         }
+
+        translationOutput.textContent = allGestures.length > 0 ? allGestures.join(' + ') : 'Translation';
       } else {
         translationOutput.textContent = "Translation";
       }
@@ -234,17 +219,20 @@
       locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
     });
     hands.setOptions({
-      maxNumHands: 1,
+      maxNumHands: 2,
       modelComplexity: 1,
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5
     });
     hands.onResults(onResults);
 
-    async function startCamera(facingMode = 'user') {
+    async function startCamera() {
       if (camera) {
         camera.stop();
       }
+
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      const facingMode = isMobile ? 'environment' : 'user';
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode }
@@ -262,11 +250,6 @@
 
       camera.start();
     }
-
-    flipBtn.addEventListener('click', () => {
-      currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
-      startCamera(currentFacingMode);
-    });
 
     videoElement.addEventListener('loadedmetadata', () => {
       canvasElement.width = videoElement.videoWidth;
