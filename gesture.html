@@ -47,12 +47,22 @@
             padding: 10px;
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
+            aspect-ratio: 640 / 480;
+            overflow: hidden;
         }
 
-        #camera-feed {
-            max-width: 100%;
-            height: auto;
+        #camera-feed, #hand-canvas {
+            width: 100%;
+            height: 100%;
             border-radius: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #hand-canvas {
+            z-index: 1;
         }
 
         .translation-box {
@@ -112,7 +122,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2></h2>
+        <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
             <h2>Gesture Recognition</h2>
             <h2></h2>
         </div>
@@ -120,21 +130,24 @@
         <div class="content">
             <div class="video-container">
                 <video id="camera-feed" autoplay playsinline></video>
+                <canvas id="hand-canvas"></canvas>
             </div>
 
-            <div class="translation-box">
+            <div class="translation-box" id="translation-output">
                 Translation
             </div>
 
             <div class="controls">
                 <div class="control-item">
                     <a href="gesture2.html" style="text-decoration: none; color: black;">
+                        <img src="images/swap.png" alt="Change Mode" style="width: 30px; height: 30px;">
                         <h3>Change Mode</h3>
                         <p>Text to sign language</p>
                     </a>
                 </div>
                 <div class="control-item">
                     <a href="offline.html" style="text-decoration: none; color: black;">
+                        <img src="images/language.png" alt="Change Mode" style="width: 30px; height: 30px;">
                         <h3>Language Options</h3>
                         <p>Switch between different sign languages</p>
                     </a>
@@ -158,25 +171,93 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
     <script>
-        const cameraFeed = document.getElementById('camera-feed');
-        let stream;
+        const videoElement = document.getElementById('camera-feed');
+        const canvasElement = document.getElementById('hand-canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const translationOutput = document.getElementById('translation-output');
+
+        function detectGesture(landmarks) {
+            if (!landmarks || landmarks.length === 0) return null;
+
+            const thumb = landmarks[4];
+            const index = landmarks[8];
+            const middle = landmarks[12];
+            const ring = landmarks[16];
+            const pinky = landmarks[20];
+
+            // Basic peace sign check (very simplified)
+            if (index.y < middle.y && middle.y < ring.y && ring.y < pinky.y && thumb.y > index.y) {
+                return "peace";
+            }
+
+            return null;
+        }
+
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.multiHandLandmarks) {
+                for (const landmarks of results.multiHandLandmarks) {
+                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+                    drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
+                    const gesture = detectGesture(landmarks);
+                    if (gesture) {
+                        translationOutput.textContent = gesture;
+                    } else {
+                        translationOutput.textContent = "Translation";
+                    }
+                }
+            } else {
+                translationOutput.textContent = "Translation";
+            }
+            canvasCtx.restore();
+        }
+
+        const hands = new Hands({
+            locateFile: (file) => {
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+            }
+        });
+        hands.setOptions({
+            maxNumHands: 2,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+        hands.onResults(onResults);
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({ image: videoElement });
+            },
+            width: 640,
+            height: 480
+        });
+        camera.start();
 
         function startCamera(constraints) {
             navigator.mediaDevices.getUserMedia(constraints)
                 .then(newStream => {
-                    if (stream) {
-                        stream.getTracks().forEach(track => track.stop());
-                    }
-                    stream = newStream;
-                    cameraFeed.srcObject = stream;
+                    videoElement.srcObject = newStream;
+                    videoElement.addEventListener('loadeddata', () => {
+                        canvasElement.width = videoElement.videoWidth;
+                        canvasElement.height = videoElement.videoHeight;
+                    });
                 })
                 .catch(error => {
                     console.error('Error accessing camera:', error);
                 });
         }
 
-        startCamera({ video: { facingMode: 'environment' } }); // Use back camera by default.
+        startCamera({ video: { facingMode: 'environment' } });
     </script>
 </body>
 </html>
