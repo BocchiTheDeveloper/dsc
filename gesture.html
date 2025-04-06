@@ -172,8 +172,8 @@
     const canvasElement = document.getElementById('hand-canvas');
     const canvasCtx = canvasElement.getContext('2d');
     const translationOutput = document.getElementById('translation-output');
-    let camera;
-
+    
+    // Function to detect specific gestures based on hand landmarks
     function detectGesture(landmarks) {
       if (!landmarks || landmarks.length === 0) return null;
 
@@ -183,31 +183,49 @@
       const ring = landmarks[16];
       const pinky = landmarks[20];
 
+      // Detecting peace sign (index and middle fingers up, others down)
       if (index.y < middle.y && middle.y < ring.y && ring.y < pinky.y && thumb.y > index.y) {
         return "peace";
+      }
+
+      // Detecting thumbs up (thumb up, fingers curled down)
+      if (thumb.y < index.y && thumb.y < middle.y && thumb.y < ring.y && thumb.y < pinky.y) {
+        return "thumbs up";
+      }
+
+      // Detecting hand with fingers spread (all fingers apart)
+      if (
+        Math.abs(index.x - middle.x) > 0.05 && Math.abs(index.x - ring.x) > 0.05 && Math.abs(index.x - pinky.x) > 0.05 &&
+        Math.abs(middle.x - ring.x) > 0.05 && Math.abs(middle.x - pinky.x) > 0.05 && Math.abs(ring.x - pinky.x) > 0.05
+      ) {
+        return "hand";
       }
 
       return null;
     }
 
+    // Function to handle the results from MediaPipe and update the translation output
     function onResults(results) {
       canvasCtx.save();
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
       canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
       if (results.multiHandLandmarks) {
-        let allGestures = [];
-
         for (const landmarks of results.multiHandLandmarks) {
           drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
           drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
           const gesture = detectGesture(landmarks);
-          if (gesture) {
-            allGestures.push(gesture);
+          // Update the translation box based on the detected gesture
+          if (gesture === "peace") {
+            translationOutput.textContent = "✌️ Peace Sign";
+          } else if (gesture === "thumbs up") {
+            translationOutput.textContent = "👍 Thumbs Up";
+          } else if (gesture === "hand") {
+            translationOutput.textContent = "🖐 Hand";
+          } else {
+            translationOutput.textContent = "Translation";
           }
         }
-
-        translationOutput.textContent = allGestures.length > 0 ? allGestures.join(' + ') : 'Translation';
       } else {
         translationOutput.textContent = "Translation";
       }
@@ -215,32 +233,26 @@
       canvasCtx.restore();
     }
 
+    // Initialize MediaPipe Hands and camera
     const hands = new Hands({
       locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
     });
     hands.setOptions({
-      maxNumHands: 2,
+      maxNumHands: 2,  // Set to 2 for detecting two hands simultaneously
       modelComplexity: 1,
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5
     });
     hands.onResults(onResults);
 
-    async function startCamera() {
-      if (camera) {
-        camera.stop();
-      }
-
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      const facingMode = isMobile ? 'environment' : 'user';
-
+    async function startCamera(facingMode = 'environment') {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode }
       });
 
       videoElement.srcObject = stream;
 
-      camera = new Camera(videoElement, {
+      const camera = new Camera(videoElement, {
         onFrame: async () => {
           await hands.send({ image: videoElement });
         },
@@ -256,7 +268,7 @@
       canvasElement.height = videoElement.videoHeight;
     });
 
-    startCamera();
+    startCamera();  // Start with back camera only
   </script>
 </body>
 </html>
