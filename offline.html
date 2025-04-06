@@ -131,7 +131,7 @@
             width: 0;
             height: 5px;
             background-color: #2196f3;
-            transition: width 5s linear;
+            transition: width 5s linear, opacity 0.5s linear 5s; /* Added opacity transition */
         }
 
         .footer {
@@ -161,7 +161,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2></h2>
+        <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
             <h2>Offline Functionality</h2>
             <h2></h2>
         </div>
@@ -268,8 +268,11 @@
                 loadingBar.style.width = '100%';
 
                 setTimeout(() => {
-                    downloadButton.remove();
-                    listItem.innerHTML += '<img src="images/check.png" alt="Downloaded">';
+                    loadingBar.style.opacity = '0'; // Add opacity transition to hide it
+                    setTimeout(() => {
+                        downloadButton.remove();
+                        listItem.innerHTML += '<img src="images/check.png" alt="Downloaded">';
+                    }, 500); // Delay removal after opacity transition
                 }, 5000);
             }
         });
