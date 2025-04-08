@@ -205,7 +205,6 @@
 
   <!-- MediaPipe Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
@@ -226,9 +225,10 @@
     });
 
     hands.setOptions({
-      maxNumHands: 2,
-      modelComplexity: 1,
-      minDetectionConfidence: 0.5,
+      selfieMode: true,
+      maxNumHands: 1,
+      modelComplexity: 0, // faster performance
+      minDetectionConfidence: 0.7,
       minTrackingConfidence: 0.5
     });
 
@@ -237,7 +237,6 @@
     function detectGesture(landmarks) {
       if (!landmarks) return null;
       const [thumb, index, middle, ring, pinky] = [landmarks[4], landmarks[8], landmarks[12], landmarks[16], landmarks[20]];
-
       if (index.y < middle.y && middle.y < ring.y && ring.y < pinky.y && thumb.y > index.y) return "peace";
       if (thumb.y < index.y && thumb.y < middle.y && thumb.y < ring.y && thumb.y < pinky.y) return "thumbs up";
 
@@ -246,7 +245,6 @@
         .every(Boolean);
 
       if (fingersApart) return "hand";
-
       return null;
     }
 
@@ -258,7 +256,7 @@
 
       if (results.multiHandLandmarks) {
         for (const landmarks of results.multiHandLandmarks) {
-          drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+          drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
           drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
           const gesture = detectGesture(landmarks);
           translationOutput.textContent = {
@@ -274,16 +272,23 @@
     }
 
     async function startCamera(facingMode = 'environment') {
-      if (cameraInstance) {
-        cameraInstance.stop();
-        cameraInstance = null;
-      }
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
+      if (cameraInstance) cameraInstance.stop();
+      if (stream) stream.getTracks().forEach(track => track.stop());
 
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode,
+          width: { ideal: 640 },
+          height: { ideal: 480 }
+        }
+      });
+
       videoElement.srcObject = stream;
+
+      videoElement.onloadedmetadata = () => {
+        canvasElement.width = videoElement.videoWidth;
+        canvasElement.height = videoElement.videoHeight;
+      };
 
       cameraInstance = new Camera(videoElement, {
         onFrame: async () => await hands.send({ image: videoElement }),
@@ -293,11 +298,6 @@
 
       cameraInstance.start();
     }
-
-    videoElement.addEventListener('loadedmetadata', () => {
-      canvasElement.width = videoElement.videoWidth;
-      canvasElement.height = videoElement.videoHeight;
-    });
 
     toggleBtn.addEventListener('click', () => {
       currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
