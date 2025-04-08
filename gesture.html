@@ -1,297 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Language App - Gesture Recognition</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            background-color: #f0f8ff;
-            height: 100%;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Language App - Gesture Recognition</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #f0f8ff;
+      height: 100%;
+    }
 
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: rgb(255, 255, 255);
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 60px;
-            box-sizing: border-box;
-        }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 60px;
+      box-sizing: border-box;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
 
-        .header h2 {
-            margin: 0;
-            font-size: 18px;
-        }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
 
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .video-container {
-            background-color: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            width: 100%;
-            aspect-ratio: 4 / 3;
-            margin-bottom: 10px;
-        }
+    .video-container {
+      background-color: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      margin-bottom: 10px;
+    }
 
-        #camera-feed, #hand-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transform: scaleX(-1); /* Ensure the video is NOT mirrored */
-        }
+    #camera-feed, #hand-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
 
-        #hand-canvas {
-            z-index: 1;
-            pointer-events: none;
-        }
+    #hand-canvas {
+      z-index: 1;
+      pointer-events: none;
+    }
 
-        .translation-box {
-            background-color: #f0f0f0;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .toggle-button {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border: none;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 10;
+    }
 
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+    .loading-indicator {
+      text-align: center;
+      margin-top: 10px;
+    }
 
-        .control-item {
-            background-color: #e0e0e0;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
 
-        .control-item h3 {
-            margin: 5px 0;
-            font-size: 14px;
-        }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: white;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px 0;
-            border-top: 1px solid #ddd;
-            z-index: 1000;
-        }
+    .translation-box {
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-        .footer a {
-            text-decoration: none;
-            color: #888;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
 
-        .footer a img {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 5px;
-        }
+    .control-item {
+      background-color: #e0e0e0;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+    }
 
-        #flip-camera {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background-color: rgba(255, 255, 255, 0.7);
-            border: none;
-            padding: 8px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 2;
-        }
-    </style>
+    .control-item h3 {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+      z-index: 1000;
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #888;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .footer a img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="images/deafy logo.png" style="width: 30px; height: 30px;" />
-            <h2>Gesture Recognition</h2>
-            <h2></h2>
-        </div>
-
-        <div class="content">
-            <div class="video-container">
-                <video id="camera-feed" autoplay playsinline muted></video>
-                <canvas id="hand-canvas"></canvas>
-                <button id="flip-camera">Flip</button>
-            </div>
-
-            <div class="translation-box" id="translation-output">Translation</div>
-
-            <div class="controls">
-                <div class="control-item">
-                    <a href="gesture2.html" style="text-decoration: none; color: black;">
-                        <img src="images/swap.png" alt="Change Mode" style="width: 30px; height: 30px;" />
-                        <h3>Change Mode</h3>
-                        <p>Text to sign language</p>
-                    </a>
-                </div>
-                <div class="control-item">
-                    <a href="offline.html" style="text-decoration: none; color: black;">
-                        <img src="images/language.png" alt="Change Language" style="width: 30px; height: 30px;" />
-                        <h3>Language Options</h3>
-                        <p>Switch between different sign languages</p>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <a href="home.html"><img src="images/home.png" alt="Home" />Home</a>
-            <a href="courses.html"><img src="images/to-do-list.png" alt="Courses" />Courses</a>
-            <a href="profile.html"><img src="images/user.png" alt="Profile" />Profile</a>
-        </div>
+  <div class="container">
+    <div class="header">
+      <img src="images/deafy logo.png" style="width: 30px; height: 30px;" />
+      <h2>Gesture Recognition</h2>
+      <h2></h2>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <div class="content">
+      <div class="video-container">
+        <video id="camera-feed" autoplay playsinline muted></video>
+        <canvas id="hand-canvas"></canvas>
+        <button class="toggle-button" id="toggle-camera">Switch Camera</button>
+      </div>
 
-    <script>
-        const videoElement = document.getElementById('camera-feed');
-        const canvasElement = document.getElementById('hand-canvas');
-        const canvasCtx = canvasElement.getContext('2d');
-        const translationOutput = document.getElementById('translation-output');
-        const flipCameraButton = document.getElementById('flip-camera');
-        let facingMode = 'environment';
+      <div class="loading-indicator" id="loading-spinner">
+        <div class="spinner"></div>
+        <p style="font-size: 12px; color: #555;">Loading AI...</p>
+      </div>
 
-        function detectGesture(landmarks) {
-            if (!landmarks || landmarks.length === 0) return null;
+      <div class="translation-box" id="translation-output">Translation</div>
 
-            const thumb = landmarks[4];
-            const index = landmarks[8];
-            const middle = landmarks[12];
-            const ring = landmarks[16];
-            const pinky = landmarks[20];
+      <div class="controls">
+        <div class="control-item">
+          <a href="gesture2.html" style="text-decoration: none; color: black;">
+            <img src="images/swap.png" style="width: 30px; height: 30px;" />
+            <h3>Change Mode</h3>
+            <p>Text to sign language</p>
+          </a>
+        </div>
+        <div class="control-item">
+          <a href="offline.html" style="text-decoration: none; color: black;">
+            <img src="images/language.png" style="width: 30px; height: 30px;" />
+            <h3>Language Options</h3>
+            <p>Switch sign languages</p>
+          </a>
+        </div>
+      </div>
+    </div>
 
-            // Very basic gesture detection - adjust thresholds for lower quality
-            const fingerCurlThreshold = 0.1; // Higher value means fingers need to be less curled
+    <div class="footer">
+      <a href="home.html"><img src="images/home.png" />Home</a>
+      <a href="courses.html"><img src="images/to-do-list.png" />Courses</a>
+      <a href="profile.html"><img src="images/user.png" />Profile</a>
+    </div>
+  </div>
 
-            const isThumbUp = thumb.y < index.y - fingerCurlThreshold && thumb.y < middle.y - fingerCurlThreshold && thumb.y < ring.y - fingerCurlThreshold && thumb.y < pinky.y - fingerCurlThreshold;
-            const isPeaceSign = index.y < middle.y - fingerCurlThreshold && middle.y < ring.y + fingerCurlThreshold && ring.y < pinky.y + fingerCurlThreshold && Math.abs(index.x - middle.x) > 0.05;
-            const isHandOpen = Math.abs(index.x - pinky.x) > 0.1 && Math.abs(thumb.x - middle.x) > 0.05;
+  <!-- MediaPipe Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
 
-            if (isPeaceSign) return "peace";
-            if (isThumbUp) return "thumbs up";
-            if (isHandOpen) return "hand";
+  <script>
+    const videoElement = document.getElementById('camera-feed');
+    const canvasElement = document.getElementById('hand-canvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    const translationOutput = document.getElementById('translation-output');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const toggleBtn = document.getElementById('toggle-camera');
 
-            return null;
+    let currentFacingMode = 'environment';
+    let stream = null;
+    let cameraInstance = null;
+
+    const hands = new Hands({
+      locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    });
+
+    hands.setOptions({
+      maxNumHands: 2,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
+
+    hands.onResults(onResults);
+
+    function detectGesture(landmarks) {
+      if (!landmarks) return null;
+      const [thumb, index, middle, ring, pinky] = [landmarks[4], landmarks[8], landmarks[12], landmarks[16], landmarks[20]];
+
+      if (index.y < middle.y && middle.y < ring.y && ring.y < pinky.y && thumb.y > index.y) return "peace";
+      if (thumb.y < index.y && thumb.y < middle.y && thumb.y < ring.y && thumb.y < pinky.y) return "thumbs up";
+
+      const fingersApart = [index, middle, ring, pinky]
+        .map((f1, i, arr) => i < arr.length - 1 ? Math.abs(f1.x - arr[i + 1].x) > 0.05 : true)
+        .every(Boolean);
+
+      if (fingersApart) return "hand";
+
+      return null;
+    }
+
+    function onResults(results) {
+      loadingSpinner.style.display = 'none';
+      canvasCtx.save();
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+      if (results.multiHandLandmarks) {
+        for (const landmarks of results.multiHandLandmarks) {
+          drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+          drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
+          const gesture = detectGesture(landmarks);
+          translationOutput.textContent = {
+            "peace": "✌️ Peace Sign",
+            "thumbs up": "👍 Thumbs Up",
+            "hand": "🖐 Hand"
+          }[gesture] || "Translation";
         }
+      } else {
+        translationOutput.textContent = "Translation";
+      }
+      canvasCtx.restore();
+    }
 
-        function onResults(results) {
-            canvasCtx.save();
-            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+    async function startCamera(facingMode = 'environment') {
+      if (cameraInstance) {
+        cameraInstance.stop();
+        cameraInstance = null;
+      }
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
 
-            if (results.multiHandLandmarks) {
-                for (const landmarks of results.multiHandLandmarks) {
-                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
-                    drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
-                    const gesture = detectGesture(landmarks);
-                    if (gesture === "peace") {
-                        translationOutput.textContent = "✌️ Peace Sign";
-                    } else if (gesture === "thumbs up") {
-                        translationOutput.textContent = "👍 Thumbs Up";
-                    } else if (gesture === "hand") {
-                        translationOutput.textContent = "🖐 Hand";
-                    } else {
-                        translationOutput.textContent = "Translation";
-                    }
-                }
-            } else {
-                translationOutput.textContent = "Translation";
-            }
-            canvasCtx.restore();
-        }
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+      videoElement.srcObject = stream;
 
-        const hands = new Hands({
-            locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
-        });
-        hands.setOptions({
-            maxNumHands: 1, // Reduce number of hands to track for performance
-            modelComplexity: 0, // Lower model complexity for faster processing
-            minDetectionConfidence: 0.3, // Lower detection confidence for faster but potentially less accurate detection
-            minTrackingConfidence: 0.3 // Lower tracking confidence for faster but potentially less stable tracking
-        });
-        hands.onResults(onResults);
+      cameraInstance = new Camera(videoElement, {
+        onFrame: async () => await hands.send({ image: videoElement }),
+        width: 640,
+        height: 480
+      });
 
-        async function startCamera() {
-            let constraints = {
-                video: { facingMode: facingMode }
-            };
+      cameraInstance.start();
+    }
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                videoElement.srcObject = stream;
+    videoElement.addEventListener('loadedmetadata', () => {
+      canvasElement.width = videoElement.videoWidth;
+      canvasElement.height = videoElement.videoHeight;
+    });
 
-                videoElement.addEventListener('loadedmetadata', () => {
-                    canvasElement.width = videoElement.videoWidth;
-                    canvasElement.height = videoElement.videoHeight;
+    toggleBtn.addEventListener('click', () => {
+      currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+      startCamera(currentFacingMode);
+    });
 
-                    const camera = new Camera(videoElement, {
-                        onFrame: async () => {
-                            await hands.send({ image: videoElement });
-                        },
-                        width: 480, // Lower resolution for performance
-                        height: 360
-                    });
-
-                    camera.start();
-                });
-            } catch (error) {
-                console.error('Camera error:', error);
-                alert('Camera access might be denied or unavailable. Please check your browser settings.');
-            }
-        }
-
-        flipCameraButton.addEventListener('click', () => {
-            facingMode = facingMode === 'environment' ? 'user' : 'environment';
-            if (videoElement.srcObject) {
-                videoElement.srcObject.getTracks().forEach(track => track.stop());
-            }
-            startCamera();
-        });
-
-        startCamera(); // Starts with the 'environment' (back) camera by default
-    </script>
+    startCamera(currentFacingMode);
+  </script>
 </body>
 </html>
