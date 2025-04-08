@@ -14,15 +14,14 @@
     }
 
     .container {
-    max-width: 400px;
-    margin: 0 auto;
-    background-color: rgb(255, 255, 255);
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 60px; /* add this line */
-    box-sizing: border-box;
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: rgb(255, 255, 255);
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 60px;
+      box-sizing: border-box;
     }
-
 
     .header {
       display: flex;
@@ -61,6 +60,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transform: scaleX(-1); /* Ensure the video is NOT mirrored */
     }
 
     #hand-canvas {
@@ -99,19 +99,18 @@
     }
 
     .footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 0;
-    border-top: 1px solid #ddd;
-    z-index: 1000;
-}
-
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+      z-index: 1000;
+    }
 
     .footer a {
       text-decoration: none;
@@ -180,8 +179,7 @@
     const canvasElement = document.getElementById('hand-canvas');
     const canvasCtx = canvasElement.getContext('2d');
     const translationOutput = document.getElementById('translation-output');
-    
-    // Function to detect specific gestures based on hand landmarks
+
     function detectGesture(landmarks) {
       if (!landmarks || landmarks.length === 0) return null;
 
@@ -191,17 +189,14 @@
       const ring = landmarks[16];
       const pinky = landmarks[20];
 
-      // Detecting peace sign (index and middle fingers up, others down)
       if (index.y < middle.y && middle.y < ring.y && ring.y < pinky.y && thumb.y > index.y) {
         return "peace";
       }
 
-      // Detecting thumbs up (thumb up, fingers curled down)
       if (thumb.y < index.y && thumb.y < middle.y && thumb.y < ring.y && thumb.y < pinky.y) {
         return "thumbs up";
       }
 
-      // Detecting hand with fingers spread (all fingers apart)
       if (
         Math.abs(index.x - middle.x) > 0.05 && Math.abs(index.x - ring.x) > 0.05 && Math.abs(index.x - pinky.x) > 0.05 &&
         Math.abs(middle.x - ring.x) > 0.05 && Math.abs(middle.x - pinky.x) > 0.05 && Math.abs(ring.x - pinky.x) > 0.05
@@ -212,7 +207,6 @@
       return null;
     }
 
-    // Function to handle the results from MediaPipe and update the translation output
     function onResults(results) {
       canvasCtx.save();
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -223,7 +217,6 @@
           drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
           drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
           const gesture = detectGesture(landmarks);
-          // Update the translation box based on the detected gesture
           if (gesture === "peace") {
             translationOutput.textContent = "✌️ Peace Sign";
           } else if (gesture === "thumbs up") {
@@ -241,12 +234,11 @@
       canvasCtx.restore();
     }
 
-    // Initialize MediaPipe Hands and camera
     const hands = new Hands({
       locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
     });
     hands.setOptions({
-      maxNumHands: 12,  // Set to 2 for detecting two hands simultaneously
+      maxNumHands: 2,
       modelComplexity: 1,
       minDetectionConfidence: 0.5,
       minTrackingConfidence: 0.5
@@ -276,7 +268,7 @@
       canvasElement.height = videoElement.videoHeight;
     });
 
-    startCamera();  // Start with back camera only
+    startCamera();
   </script>
 </body>
 </html>
