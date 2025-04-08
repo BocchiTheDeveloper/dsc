@@ -1,234 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Language App</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f8ff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Language App</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f8ff;
+    }
 
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: rgb(255, 255, 255);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: rgb(255, 255, 255);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 70px; /* To prevent footer from overlapping content */
+      box-sizing: border-box;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
 
-        .header img {
-            width: 24px;
-            height: 24px;
-        }
+    .header img {
+      width: 30px;
+      height: 30px;
+    }
 
-        .header h2 {
-            margin: 0;
-            font-size: 18px;
-        }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
 
-        .header .dots {
-            font-size: 24px;
-            color: #888;
-        }
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 20px;
+    }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 20px;
-        }
+    .grid-item {
+      background-color: #e0e0e0;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
 
-        .grid-item {
-            background-color: #e0e0e0;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
-        }
+    .grid-item a {
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .grid-item a {
-            text-decoration: none;
-            color: inherit;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    .grid-item img {
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+    }
 
-        .grid-item img {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 10px;
-        }
+    .grid-item h3 {
+      margin: 5px 0;
+      font-size: 16px;
+    }
 
-        .grid-item h3 {
-            margin: 5px 0;
-            font-size: 16px;
-        }
+    .grid-item p {
+      margin: 0;
+      font-size: 12px;
+    }
 
-        .grid-item p {
-            margin: 0;
-            font-size: 12px;
-        }
+    .grid-item:nth-child(1) { background-color: #f44336; }
+    .grid-item:nth-child(2) { background-color: #3924db; }
+    .grid-item:nth-child(3) { background-color: #ffeb3b; color: black; }
+    .grid-item:nth-child(4) { background-color: #f85de8; }
 
-        .grid-item:nth-child(1) { background-color: #f44336; }
-        .grid-item:nth-child(2) { background-color: #3924db; }
-        .grid-item:nth-child(3) { background-color: #ffeb3b; color: black; }
-        .grid-item:nth-child(4) { background-color: #f85de8; }
+    .promo {
+      margin: 10px;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      border-radius: 15px;
+      box-sizing: border-box;
+    }
 
-        .promo {
-            margin: 10px;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            border-radius: 15px;
-            box-sizing: border-box;
-        }
+    .promo img {
+      width: 50px;
+      height: 50px;
+    }
 
-        .promo img {
-            width: 50px;
-            height: 50px;
-        }
+    .promo h2 {
+      margin: 5px 0;
+      font-size: 18px;
+    }
 
-        .promo h2 {
-            margin: 5px 0;
-            font-size: 18px;
-        }
+    .promo p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
 
-        .promo p {
-            margin: 5px 0;
-            font-size: 14px;
-        }
+    .promo button {
+      background: linear-gradient(to bottom, #2196f3, #2196f3 50%, white 50%, white);
+      background-size: 100% 200%;
+      background-position: 0% 0%;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-position 0.3s ease;
+    }
 
-        .promo button {
-            background: linear-gradient(to bottom, #2196f3, #2196f3 50%, white 50%, white);
-            background-size: 100% 200%;
-            background-position: 0% 0%;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-position 0.3s ease;
-        }
+    .promo button:hover {
+      background-position: 0% 100%;
+      color: #2196f3;
+    }
 
-        .promo button:hover {
-            background-position: 0% 100%;
-            color: #2196f3;
-        }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+      z-index: 1000;
+    }
 
-        .footer {
-            background-color: white;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px 0;
-            border-top: 1px solid #ddd;
-            margin-top: auto;
-        }
+    .footer a {
+      text-decoration: none;
+      color: #888;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .footer a {
-            text-decoration: none;
-            color: #888;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        footer a img {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 5px;
-        }
-    </style>
+    .footer a img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-        <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
-            <h2>Home</h2>
-            <h2></h2>
-        </div>
-
-        <div class="grid-container">
-            <div class="grid-item" style="background-color: #f44336;">
-                <a href="gesture2.html">
-                    <img src="images/3d-animated.png" alt="3D Animated">
-                    <h3>3D Animated Translation</h3>
-                    <p>Non-sign language user can translate into 3D animated sign language</p>
-                </a>
-            </div>
-            <div class="grid-item" style="background-color: #3924db;">
-                <a href="gesture.html">
-                    <img src="images/gesture-recognition.png" alt="Gesture Recognition">
-                    <h3>Gesture Recognition</h3>
-                    <p>A real-time gesture recognition translates language into text or speech in real time</p>
-                </a>
-            </div>
-            <div class="grid-item" style="background-color: #ffeb3b; color: black;">
-                <a href="tutorial.html">
-                    <img src="images/tutorial.png" alt="Tutorial">
-                    <h3>Tutorial</h3>
-                    <p>Basic instructions or tips</p>
-                </a>
-            </div>
-            <div class="grid-item" style="background-color: #f85de8;">
-                <a href="offline.html">
-                    <img src="images/offline.png" alt="Offline Functionality">
-                    <h3>Offline Functionality</h3>
-                    <p>Downloaded data sets of sign languages</p>
-                </a>
-            </div>
-        </div>
-
-        <a href="premium.html" style="text-decoration: none;"><div class="promo" style="background-color: #f4be36;">
-            <img src="images/diamond.png" alt="Person">
-            <h2>ELEVATE YOUR EXPERIENCE TODAY</h2>
-            <p>TRY OUR PREMIUM MODE</p>
-            <button>BUY NOW</button>
-            <p></p>
-        </div></a>
-
-        <a href="courses.html" style="text-decoration: none;"><div class="promo" style="background-color: #f46f36;">
-            <img src="images/certificate.png" alt="Person 2">
-            <p>PURCHASE PREMIUM NOW, AND GET ACCESS TO DIFFERENT SING LANGUAGE COURSES</p>
-            <h2>Your Hands, Your Voice</h2>
-        </div></a>
-
-        <div class="footer">
-            <a href="home.html">
-                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
-                Home
-            </a>
-            <a href="courses.html">
-                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
-                Courses
-            </a>
-            <a href="profile.html">
-                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
-                Profile
-            </a>
-        </div>
+  <div class="container">
+    <div class="header">
+      <img src="images/deafy logo.png" alt="Logo" />
+      <h2>Home</h2>
+      <h2></h2>
     </div>
+
+    <div class="grid-container">
+      <div class="grid-item">
+        <a href="gesture2.html">
+          <img src="images/3d-animated.png" alt="3D Animated">
+          <h3>3D Animated Translation</h3>
+          <p>Non-sign language user can translate into 3D animated sign language</p>
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="gesture.html">
+          <img src="images/gesture-recognition.png" alt="Gesture Recognition">
+          <h3>Gesture Recognition</h3>
+          <p>A real-time gesture recognition translates language into text or speech in real time</p>
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="tutorial.html">
+          <img src="images/tutorial.png" alt="Tutorial">
+          <h3>Tutorial</h3>
+          <p>Basic instructions or tips</p>
+        </a>
+      </div>
+      <div class="grid-item">
+        <a href="offline.html">
+          <img src="images/offline.png" alt="Offline Functionality">
+          <h3>Offline Functionality</h3>
+          <p>Downloaded data sets of sign languages</p>
+        </a>
+      </div>
+    </div>
+
+    <a href="premium.html" style="text-decoration: none;">
+      <div class="promo" style="background-color: #f4be36; color: black;">
+        <img src="images/diamond.png" alt="Premium">
+        <h2>ELEVATE YOUR EXPERIENCE TODAY</h2>
+        <p>TRY OUR PREMIUM MODE</p>
+        <button>BUY NOW</button>
+      </div>
+    </a>
+
+    <a href="courses.html" style="text-decoration: none;">
+      <div class="promo" style="background-color: #f46f36;">
+        <img src="images/certificate.png" alt="Courses">
+        <p>PURCHASE PREMIUM NOW, AND GET ACCESS TO DIFFERENT SIGN LANGUAGE COURSES</p>
+        <h2>Your Hands, Your Voice</h2>
+      </div>
+    </a>
+  </div>
+
+  <div class="footer">
+    <a href="home.html">
+      <img src="images/home.png" alt="Home">
+      Home
+    </a>
+    <a href="courses.html">
+      <img src="images/to-do-list.png" alt="Courses">
+      Courses
+    </a>
+    <a href="profile.html">
+      <img src="images/user.png" alt="Profile">
+      Profile
+    </a>
+  </div>
 </body>
 </html>
