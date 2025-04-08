@@ -13,12 +13,14 @@
         }
 
         .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: white;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: rgb(255, 255, 255);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 60px; /* add this line */
+        box-sizing: border-box;
         }
 
         .header {
@@ -106,13 +108,19 @@
         }
 
         .footer {
-            background-color: white;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 10px 0;
-            border-top: 1px solid #ddd;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px 0;
+        border-top: 1px solid #ddd;
+        z-index: 1000;
         }
+
 
         .footer a {
             text-decoration: none;
