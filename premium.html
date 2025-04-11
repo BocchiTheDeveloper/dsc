@@ -165,10 +165,10 @@
         <img class="profile-image" src="images/man.png" alt="Profile">
         <div class="user-type">FREEMIUM USER</div>
         <div class="subscription-prompt">Buy Subscription for less Hastle!</div>
-        <div class="one-time-payment" data-price="52">
+        <div class="one-time-payment" data-price="2,999">
             <strong>One Time Payment</strong>
             <span>Click Here!</span>
-            $ 52
+            ₱ 2,999
         </div>
         <div class="unlimited-translation">
             <img src="images/blue-check.png" alt="Check">
@@ -176,17 +176,17 @@
             ---
         </div>
         <div class="duration-options">
-            <div data-price="0.50">
+            <div data-price="29">
                 <strong>1 week</strong>
-                <span>$ 0.50</span>
+                <span>₱ 29</span>
             </div>
-            <div data-price="1.75">
+            <div data-price="99">
                 <strong>1 month</strong>
-                <span>$ 1.75</span>
+                <span>₱ 99</span>
             </div>
-            <div data-price="17">
+            <div data-price="999">
                 <strong>1 year</strong>
-                <span>$ 17</span>
+                <span>₱ 999</span>
             </div>
         </div>
         <button class="buy-button">Select a duration</button>
@@ -216,7 +216,7 @@
                 el.classList.remove('selected');
             });
             element.classList.add('selected');
-            buyButton.textContent = `$${element.dataset.price} Buy Now`;
+            buyButton.textContent = `₱ ${element.dataset.price} Buy Now`;
         }
 
         oneTimePayment.addEventListener('click', () => {
