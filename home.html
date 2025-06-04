@@ -30,6 +30,7 @@
       transform: rotate(25deg);
       pointer-events: none;
       animation: shine 3s infinite;
+      z-index: 2;
     }
 
     body {
@@ -136,27 +137,32 @@
     .promo {
       margin: 10px;
       padding: 20px;
-      text-align: center;
       color: white;
       border-radius: 15px;
       box-sizing: border-box;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
     .promo img {
       width: 50px;
       height: 50px;
+      align-self: flex-end;
     }
 
     .promo h2 {
       margin: 5px 0;
       font-size: 18px;
+      text-align: left;
     }
 
     .promo p {
       margin: 5px 0;
       font-size: 14px;
+      text-align: left;
     }
 
     .promo button {
@@ -169,11 +175,29 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-position 0.3s ease;
+      align-self: flex-start;
     }
 
     .promo button:hover {
       background-position: 0% 100%;
       color: #2196f3;
+    }
+
+    .promo .corner-text {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      text-align: right;
+    }
+
+    .promo .corner-text p {
+      font-size: 12px;
+      margin: 0;
+    }
+
+    .promo .corner-text h2 {
+      font-size: 16px;
+      margin: 5px 0 0 0;
     }
 
     .footer {
@@ -244,20 +268,29 @@
       </div>
     </div>
 
-    <a href="promo.html" style="text-decoration: none;">
-      <div class="promo shine-effect" style="background: linear-gradient(to bottom, #e65100, #ff9800); color: white;">
-        <img src="images/diamond.png" alt="Premium">
-        <h2>ELEVATE YOUR EXPERIENCE TODAY</h2>
+    <a href="premium.html" style="text-decoration: none;">
+      <div class="promo shine-effect" style="background: linear-gradient(to bottom, #e65100, #ff9800);">
+        <h2>ELEVATE YOUR<br>EXPERIENCE<br>TODAY</h2>
         <p>TRY OUR PREMIUM MODE</p>
         <button>BUY NOW</button>
+        <img src="images/premium-img.png" style="width: 290px; height: 200px; position: absolute; left: 40%; top: 8%; z-index: 1;">
       </div>
     </a>
 
     <a href="courses.html" style="text-decoration: none;">
       <div class="promo" style="background: linear-gradient(to bottom, #bf360c, #f46f36);">
-        <img src="images/certificate.png" alt="Courses">
-        <p>PURCHASE PREMIUM NOW AND GET ACCESS TO DIFFERENT SIGN LANGUAGE COURSES</p>
-        <h2>Your Hands, Your Voice</h2>
+        <div class="corner-text">
+          <br>
+          <p>PURCHASE PREMIUM NOW AND GET ACCESS<br>TO DIFFERENT SIGN LANGUAGE COURSES</p>
+          <br>
+          <h2 style="margin-left: 29px;">Your Hands, Your Voice.</h2>
+          <br>
+        </div>
+        <img src="images/courses-img.png" style="width: 250px; height: 150px; position: absolute; left: -5%; top: 2%;">
+        <br>
+        <br>
+        <br>
+        <img src="images/certificate.png" alt="Courses" style="margin-right: -10px;">
       </div>
     </a>
   </div>
