@@ -13,6 +13,7 @@
         }
 
         .container {
+            background: linear-gradient(to bottom, skyblue, lightblue);
             max-width: 400px;
             margin: 0 auto;
             background-color: white;
@@ -85,21 +86,17 @@
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
-            padding-bottom: 10px; /* Space for scrollbar */
+            padding-bottom: 10px;
         }
 
         .course-tile {
             min-width: 250px;
-            background-color: #ddd;
             border-radius: 8px;
             margin-right: 10px;
             padding: 15px;
             scroll-snap-align: start;
             flex: 0 0 auto;
-        }
-
-        .course-tile:last-child {
-            margin-right: 0;
+            color: white;
         }
 
         .course-tile img {
@@ -107,6 +104,7 @@
             height: 50px;
             border-radius: 50%;
             margin-bottom: 10px;
+            border: 3px solid white;
         }
 
         .course-tile h3 {
@@ -116,14 +114,13 @@
 
         .course-tile p {
             font-size: 12px;
-            color: #555;
             margin-bottom: 10px;
         }
 
         .course-tile .details {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
             font-size: 12px;
         }
 
@@ -132,22 +129,18 @@
             align-items: center;
         }
 
-        .course-tile .details span::before {
-            margin-right: 5px;
-        }
-
         .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: white;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 10px 0;
-        border-top: 1px solid #ddd;
-        z-index: 1000;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            z-index: 1000;
         }
 
         .footer a {
@@ -159,7 +152,7 @@
             margin: 0 10px;
         }
 
-        footer a img {
+        .footer a img {
             width: 25px;
             height: 25px;
             margin-bottom: 5px;
@@ -185,66 +178,66 @@
         <div class="courses-section">
             <h2>Ongoing Courses <span class="view-all">View All</span></h2>
             <div class="course-list">
-                <div class="course-tile" style="background-color: darkblue; color: white;">
-                    <img src="images/sign1.png" alt="Course Image" style="border: 3px solid white;">
+                <div class="course-tile" style="background: linear-gradient(to bottom right, #00008b, #4169e1);">
+                    <img src="images/sign1.png" alt="Course Image">
                     <h3>Introduction to Sign Language & Communication Tools</h3>
-                    <p style="color: white;">Overview of different sign languages (e.g., ASL, BSL).</p>
+                    <p>Overview of different sign languages (e.g., ASL, BSL).</p>
                     <div class="details">
-                        <span><span style="font-size: 14px;">⏱️</span> 9 videos left</span>
+                        <span>⏱️ 9 videos left</span>
                     </div>
                 </div>
-                <div class="course-tile" style="background-color: cyan; color: darkblue;">
-                    <img src="images/sign1.png" alt="Course Image 2" style="border: 3px solid white;">
+                <div class="course-tile" style="background: linear-gradient(to bottom right, #008b8b, #00ffff); color: darkblue;">
+                    <img src="images/sign1.png" alt="Course Image 2">
                     <h3>Learning Alphabet</h3>
-                    <p style="color: darkblue;">Learn the basics of the alphabet in sign language.</p>
+                    <p>Learn the basics of the alphabet in sign language.</p>
                     <div class="details">
-                        <span><span style="font-size: 14px;">⏱️</span> 5 videos left</span>
+                        <span>⏱️ 5 videos left</span>
                     </div>
                 </div>
-                </div>
+            </div>
         </div>
 
         <div class="courses-section">
             <h2>Saved Courses <span class="view-all">View All</span></h2>
             <div class="course-list">
-                <div class="course-tile" style="background-color: orangered; color: white;">
-                    <img src="images/sign2.png" style="border: 3px solid white">
+                <div class="course-tile" style="background: linear-gradient(to bottom right, #8b0000, orangered);">
+                    <img src="images/sign2.png" alt="Course Image 3">
                     <h3>Greetings and Basic Phrases</h3>
-                    <p style="color: white;">Karlo Ganza</p>
+                    <p>Karlo Ganza</p>
                     <div class="details">
                         <span>Easy</span>
                         <span>⭐ 4.7 (25)</span>
-                        <span><span style="font-size: 14px;">⏱️</span> 12h 52m</span>
-                        <span><span style="font-size: 14px;">📖</span> 14 Lessons</span>
+                        <span>⏱️ 12h 52m</span>
+                        <span>📖 14 Lessons</span>
                         <span>$8</span>
                     </div>
                 </div>
-                <div class="course-tile" style="background-color: yellow; color: darkred;">
-                    <img src="images/sign2.png" style="border: 3px solid white;">
+                <div class="course-tile" style="background: linear-gradient(to bottom right, #b8860b, #ffff00); color: darkred;">
+                    <img src="images/sign2.png" alt="Course Image 4">
                     <h3>Advanced Phrases</h3>
-                    <p style="color: darkred;">Jhydd Mahinay</p>
+                    <p>Jhydd Mahinay</p>
                     <div class="details">
                         <span>Easy</span>
                         <span>⭐ 4.8 (30)</span>
-                        <span><span style="font-size: 14px;">⏱️</span> 8h 52m</span>
-                        <span><span style="font-size: 14px;">📖</span> 10 Lessons</span>
+                        <span>⏱️ 8h 52m</span>
+                        <span>📖 10 Lessons</span>
                         <span>$10</span>
                     </div>
                 </div>
-                </div>
+            </div>
         </div>
 
         <div class="footer">
             <a href="home.html">
-                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+                <img src="images/home.png" alt="Home">
                 Home
             </a>
             <a href="courses.html">
-                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+                <img src="images/to-do-list.png" alt="Courses">
                 Courses
             </a>
             <a href="profile.html">
-                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+                <img src="images/user.png" alt="Profile">
                 Profile
             </a>
         </div>
