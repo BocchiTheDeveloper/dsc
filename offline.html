@@ -1,288 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Language App - Offline Functionality</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f8ff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Language App - Offline Functionality</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f8ff;
+    }
 
-        .container {
-        max-width: 400px;
-        margin: 0 auto;
-        background-color: rgb(255, 255, 255);
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 60px; /* add this line */
-        box-sizing: border-box;
-        }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 60px;
+      box-sizing: border-box;
+    }
 
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-        }
+    .header img {
+      width: 24px;
+      height: 24px;
+    }
 
-        .header img {
-            width: 24px;
-            height: 24px;
-        }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
 
-        .header h2 {
-            margin: 0;
-            font-size: 18px;
-        }
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .header .dots {
-            font-size: 24px;
-            color: #888;
-        }
+    .text-section {
+      padding: 10px 0;
+      font-size: 14px;
+      color: #333;
+    }
 
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
+    .search-filter {
+      display: flex;
+      margin: 10px 0;
+    }
 
-        .text-section {
-            padding: 10px 0;
-            font-size: 14px;
-            color: #333;
-        }
+    .search-filter input[type="text"] {
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
 
-        .search-filter {
-            display: flex;
-            margin: 10px 0;
-        }
+    .search-filter button {
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
 
-        .search-filter input[type="text"] {
-            flex-grow: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
+    .list-section {
+      margin-top: 20px;
+      min-height: 300px; /* Prevents resizing when filtering */
+    }
 
-        .search-filter button {
-            background-color: #2196f3;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 15px;
-            cursor: pointer;
-        }
+    .list-section h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
 
-        .list-section {
-            margin-top: 20px;
-        }
+    .list-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
 
-        .list-section h2 {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
+    .list-item img {
+      width: 40px;
+      height: 40px;
+      margin-right: 15px;
+    }
 
-        .list-item {
-            display: flex;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-            position: relative;
-        }
+    .list-item-text {
+      flex-grow: 1;
+    }
 
-        .list-item img {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-        }
+    .list-item-text h3 {
+      margin: 0;
+      font-size: 16px;
+    }
 
-        .list-item-text {
-            flex-grow: 1;
-        }
+    .list-item-text p {
+      margin: 5px 0;
+      font-size: 12px;
+      color: #555;
+    }
 
-        .list-item-text h3 {
-            margin: 0;
-            font-size: 16px;
-        }
+    .list-item button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
 
-        .list-item-text p {
-            margin: 5px 0;
-            font-size: 12px;
-            color: #555;
-        }
+    .loading-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 5px;
+      background-color: #2196f3;
+      transition: width 5s linear, opacity 0.5s linear 5s;
+    }
 
-        .list-item button {
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+      z-index: 1000;
+    }
 
-        .loading-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 5px;
-            background-color: #2196f3;
-            transition: width 5s linear, opacity 0.5s linear 5s; /* Added opacity transition */
-        }
+    .footer a {
+      text-decoration: none;
+      color: #888;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: white;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 10px 0;
-        border-top: 1px solid #ddd;
-        z-index: 1000;
-        }
-
-
-        .footer a {
-            text-decoration: none;
-            color: #888;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        footer a img {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 5px;
-        }
-    </style>
+    .footer a img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-        <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
-            <h2>Offline Functionality</h2>
-            <h2></h2>
-        </div>
-
-        <div class="content">
-            <div class="text-section">
-                Downloaded data sets are located in profile
-            </div>
-
-            <div class="search-filter">
-                <input type="text" id="filter-input" placeholder="Search">
-                <button id="filter-button">Filter</button>
-            </div>
-
-            <div class="list-section" id="language-list">
-                <h2>Download Sign Languages</h2>
-                <div class="list-item checked" data-language="ASL American Sign Language">
-                    <img src="images/deafy logo.png" alt="ASL">
-                    <div class="list-item-text">
-                        <h3>American Sign Language (ASL)</h3>
-                        <p>Used Primarily in the United States and Canada.</p>
-                    </div>
-                    <img src="images/check.png" alt="Downloaded">
-                </div>
-                <div class="list-item" data-language="BSL British Sign Language">
-                    <img src="images/deafy logo.png" alt="BSL">
-                    <div class="list-item-text">
-                        <h3>British Sign Language (BSL)</h3>
-                        <p>Used in the United Kingdom Completely different from ASL.</p>
-                    </div>
-                    <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
-                    <div class="loading-bar"></div>
-                </div>
-                <div class="list-item" data-language="LSF French Sign Language">
-                    <img src="images/deafy logo.png" alt="LSF">
-                    <div class="list-item-text">
-                        <h3>French Sign Language (LSF)</h3>
-                        <p>Used in France and French-speaking areas.</p>
-                    </div>
-                    <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
-                    <div class="loading-bar"></div>
-                </div>
-                <div class="list-item" data-language="JSL Japanese Sign Language">
-                    <img src="images/deafy logo.png" alt="JSL">
-                    <div class="list-item-text">
-                        <h3>Japanese Sign Language (JSL)</h3>
-                        <p>Used in Japan. Has its own unique features and cultural context.</p>
-                    </div>
-                    <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
-                    <div class="loading-bar"></div>
-                </div>
-                <div class="list-item" data-language="CSL Chinese Sign Language">
-                    <img src="images/deafy logo.png" alt="CSL">
-                    <div class="list-item-text">
-                        <h3>Chinese Sign Language (CSL)</h3>
-                        <p>Used in China with Regional Variations.</p>
-                    </div>
-                    <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
-                    <div class="loading-bar"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <a href="home.html">
-                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
-                Home
-            </a>
-            <a href="courses.html">
-                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
-                Courses
-            </a>
-            <a href="profile.html">
-                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
-                Profile
-            </a>
-        </div>
+  <div class="container">
+    <div class="header">
+      <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
+      <h2>Offline Functionality</h2>
+      <h2></h2>
     </div>
 
-    <script>
-        const filterInput = document.getElementById('filter-input');
-        const filterButton = document.getElementById('filter-button');
-        const languageList = document.getElementById('language-list');
+    <div class="content">
+      <div class="text-section">
+        Downloaded data sets are located in profile
+      </div>
 
-        filterButton.addEventListener('click', () => {
-            const filterText = filterInput.value.trim().toLowerCase();
-            const listItems = languageList.querySelectorAll('.list-item');
+      <div class="search-filter">
+        <input type="text" id="filter-input" placeholder="Search">
+        <button id="filter-button">Filter</button>
+      </div>
 
-            listItems.forEach(item => {
-                const languageData = item.dataset.language.toLowerCase();
-                if (filterText === '' || languageData.includes(filterText)) {
-                    item.style.display = 'flex';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
+      <div class="list-section" id="language-list">
+        <h2>Download Sign Languages</h2>
+
+        <!-- Sample downloaded item -->
+        <div class="list-item checked" data-language="ASL American Sign Language">
+          <img src="images/deafy logo.png" alt="ASL">
+          <div class="list-item-text">
+            <h3>American Sign Language (ASL)</h3>
+            <p>Used Primarily in the United States and Canada.</p>
+          </div>
+          <img src="images/check.png" alt="Downloaded">
+        </div>
+
+        <!-- Downloadable items -->
+        <div class="list-item" data-language="BSL British Sign Language">
+          <img src="images/deafy logo.png" alt="BSL">
+          <div class="list-item-text">
+            <h3>British Sign Language (BSL)</h3>
+            <p>Used in the United Kingdom Completely different from ASL.</p>
+          </div>
+          <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
+          <div class="loading-bar"></div>
+        </div>
+
+        <div class="list-item" data-language="LSF French Sign Language">
+          <img src="images/deafy logo.png" alt="LSF">
+          <div class="list-item-text">
+            <h3>French Sign Language (LSF)</h3>
+            <p>Used in France and French-speaking areas.</p>
+          </div>
+          <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
+          <div class="loading-bar"></div>
+        </div>
+
+        <div class="list-item" data-language="JSL Japanese Sign Language">
+          <img src="images/deafy logo.png" alt="JSL">
+          <div class="list-item-text">
+            <h3>Japanese Sign Language (JSL)</h3>
+            <p>Used in Japan. Has its own unique features and cultural context.</p>
+          </div>
+          <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
+          <div class="loading-bar"></div>
+        </div>
+
+        <div class="list-item" data-language="CSL Chinese Sign Language">
+          <img src="images/deafy logo.png" alt="CSL">
+          <div class="list-item-text">
+            <h3>Chinese Sign Language (CSL)</h3>
+            <p>Used in China with Regional Variations.</p>
+          </div>
+          <button class="download-button"><img src="images/downloads.png" alt="Download"></button>
+          <div class="loading-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="home.html">
+        <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+        Home
+      </a>
+      <a href="courses.html">
+        <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+        Courses
+      </a>
+      <a href="profile.html">
+        <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+        Profile
+      </a>
+    </div>
+  </div>
+
+<script>
+    const filterInput = document.getElementById('filter-input');
+    const filterButton = document.getElementById('filter-button');
+    const languageList = document.getElementById('language-list');
+
+    // Load already downloaded languages
+    const downloadedLanguages = JSON.parse(localStorage.getItem('downloadedLanguages')) || [];
+
+    document.querySelectorAll('.list-item').forEach(item => {
+        const langKey = item.dataset.language;
+        const alreadyDownloaded = downloadedLanguages.includes(langKey);
+
+        if (alreadyDownloaded) {
+            const button = item.querySelector('.download-button');
+            if (button) button.remove();
+            item.innerHTML += '<img src="images/check.png" alt="Downloaded">';
+        }
+    });
+
+    filterButton.addEventListener('click', () => {
+        const filterText = filterInput.value.trim().toLowerCase();
+        const listItems = languageList.querySelectorAll('.list-item');
+
+        listItems.forEach(item => {
+            const languageData = item.dataset.language.toLowerCase();
+            item.style.display = languageData.includes(filterText) ? 'flex' : 'none';
         });
+    });
 
-        languageList.addEventListener('click', (event) => {
-            const downloadButton = event.target.closest('.download-button');
-            if (downloadButton) {
-                const listItem = downloadButton.closest('.list-item');
-                const loadingBar = downloadButton.nextElementSibling;
-                loadingBar.style.width = '100%';
+    languageList.addEventListener('click', (event) => {
+        const downloadButton = event.target.closest('.download-button');
+        if (downloadButton) {
+            const listItem = downloadButton.closest('.list-item');
+            const loadingBar = downloadButton.nextElementSibling;
+            const language = listItem.dataset.language;
+
+            // Hide the button
+            downloadButton.style.display = 'none';
+            loadingBar.style.width = '100%';
+
+            setTimeout(() => {
+                loadingBar.style.opacity = '0';
+
+                // Save to localStorage
+                const stored = JSON.parse(localStorage.getItem('downloadedLanguages')) || [];
+                if (!stored.includes(language)) {
+                    stored.push(language);
+                    localStorage.setItem('downloadedLanguages', JSON.stringify(stored));
+                }
 
                 setTimeout(() => {
-                    loadingBar.style.opacity = '0'; // Add opacity transition to hide it
-                    setTimeout(() => {
-                        downloadButton.remove();
-                        listItem.innerHTML += '<img src="images/check.png" alt="Downloaded">';
-                    }, 500); // Delay removal after opacity transition
-                }, 5000);
-            }
-        });
-    </script>
+                    downloadButton.remove();
+                    listItem.innerHTML += '<img src="images/check.png" alt="Downloaded">';
+                }, 500);
+            }, 5000);
+        }
+    });
+</script>
+
 </body>
 </html>
