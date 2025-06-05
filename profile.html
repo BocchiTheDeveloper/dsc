@@ -1,234 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f8ff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Page</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f8ff;
+    }
 
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: linear-gradient(to bottom, skyblue, lightblue);
-            height: 120vh; /* Increased height */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: linear-gradient(to bottom, skyblue, lightblue);
+      min-height: 165vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
-        .header {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
+    .header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      margin-bottom: 20px;
+    }
 
-        .header img {
-            width: 24px;
-            height: 24px;
-        }
+    .header img {
+      width: 24px;
+      height: 24px;
+    }
 
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 20px;
-        }
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 20px;
+    }
 
-        .profile-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: #ddd;
-            margin-bottom: 10px;
-        }
+    .profile-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #ddd;
+      margin-bottom: 10px;
+    }
 
-        .profile-name {
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
+    .profile-name {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
 
-        .profile-icon {
-            width: 24px;
-            height: 24px;
-        }
+    .profile-icon {
+      width: 24px;
+      height: 24px;
+    }
 
-        .search-certificates {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 20px;
-        }
+    .search-certificates {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 20px;
+    }
 
-        .search-certificates input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
+    .search-certificates input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
 
-        .search-certificates button {
-            background-color: #e0e0e0;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    .search-certificates button {
+      background-color: #e0e0e0;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
 
-        .downloaded-languages {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .downloaded-languages {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-        .download-icon {
-            width: 80px;
-            height: 80px;
-            background-color: #ddd;
-            border-radius: 50%;
-            margin: 20px auto;
-        }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+      z-index: 1000;
+    }
 
-        .no-languages {
-            font-size: 14px;
-            color: #555;
-        }
+    .footer a {
+      text-decoration: none;
+      color: #888;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 10px;
+    }
 
-        .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: white;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 10px 0;
-        border-top: 1px solid #ddd;
-        z-index: 1000;
-        }
+    footer a img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 5px;
+    }
 
-        .footer a {
-            text-decoration: none;
-            color: #888;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 10px;
-        }
+    .list-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      width: 100%;
+    }
 
-        footer a img {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 5px;
-        }
-        .list-section {
-            margin-top: 20px;
-        }
+    .list-item img {
+      width: 40px;
+      height: 40px;
+      margin-right: 15px;
+    }
 
-        .list-section h2 {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
+    .list-item-text {
+      flex-grow: 1;
+    }
 
-        .list-item {
-            display: flex;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-            position: relative;
-        }
+    .list-item-text h3 {
+      margin: 0;
+      font-size: 16px;
+    }
 
-        .list-item img {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-        }
+    .list-item-text p {
+      margin: 5px 0;
+      font-size: 12px;
+      color: #555;
+    }
 
-        .list-item-text {
-            flex-grow: 1;
-        }
-
-        .list-item-text h3 {
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .list-item-text p {
-            margin: 5px 0;
-            font-size: 12px;
-            color: #555;
-        }
-
-        .list-item button {
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-    </style>
+    .list-item button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h2></h2>
-            <span>Profile</span>
-            <h2></h2>
+  <div class="container">
+    <div class="header">
+      <h2></h2>
+      <span>Profile</span>
+      <h2></h2>
+    </div>
+    <div class="profile-info">
+      <img class="profile-image" src="images/man.png" alt="Profile"/>
+      <div class="profile-name">User <img src="images/diamond.png" alt="Diamond" class="profile-icon"></div>
+    </div>
+    <div class="search-certificates">
+      <input type="text" id="searchInput" placeholder="Search" />
+      <a href="certificates.html"><button>Certificates</button></a>
+    </div>
+    <div class="downloaded-languages">
+      <h2>Downloaded Sign Languages</h2>
+      <div class="list-item checked" data-language="ASL American Sign Language" id="asl">
+          <img src="images/deafy logo.png" alt="ASL">
+          <div class="list-item-text">
+            <h3>American Sign Language (ASL)</h3>
+            <p>Used Primarily in the United States and Canada.</p>
+          </div>
+          <img src="images/check.png" alt="Downloaded">
         </div>
-        <div class="profile-info">
-            <img class="profile-image" src="images/man.png" alt="Profile">
-            <div class="profile-name">User <img src="images/diamond.png" alt="Diamond" class="profile-icon"></div>
-        </div>
-        <div class="search-certificates">
-            <input type="text" placeholder="Search">
-            <a href="certificates.html"><button>Certificates</button></a>
-        </div>
-        <div class="list-item checked" data-language="ASL American Sign Language">
-            <img src="images/deafy logo.png" alt="ASL">
+      <div id="downloaded-list"></div>
+    </div>
+
+    <div class="footer">
+      <a href="home.html">
+        <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+        Home
+      </a>
+      <a href="courses.html">
+        <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+        Courses
+      </a>
+      <a href="profile.html">
+        <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+        Profile
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const downloadedLanguages = JSON.parse(localStorage.getItem('downloadedLanguages')) || [];
+
+    const downloadedList = document.getElementById('downloaded-list');
+    const searchInput = document.getElementById('searchInput');
+
+    const languageDetails = {
+      "ASL American Sign Language": {
+        name: "American Sign Language (ASL)",
+        desc: "Used Primarily in the United States and Canada.",
+        img: "images/deafy logo.png"
+      },
+      "BSL British Sign Language": {
+        name: "British Sign Language (BSL)",
+        desc: "Used in the United Kingdom. Completely different from ASL.",
+        img: "images/deafy logo.png"
+      },
+      "LSF French Sign Language": {
+        name: "French Sign Language (LSF)",
+        desc: "Used in France and French-speaking areas.",
+        img: "images/deafy logo.png"
+      },
+      "JSL Japanese Sign Language": {
+        name: "Japanese Sign Language (JSL)",
+        desc: "Used in Japan. Has its own unique features and cultural context.",
+        img: "images/deafy logo.png"
+      },
+      "CSL Chinese Sign Language": {
+        name: "Chinese Sign Language (CSL)",
+        desc: "Used in China with Regional Variations.",
+        img: "images/deafy logo.png"
+      }
+    };
+
+    let asl = document.getElementById('asl');
+
+    function renderLanguages(filter = "") {
+      downloadedList.innerHTML = "";
+      let combinedList = [...downloadedLanguages];
+
+      if (filter.trim().length > 0 && "ASL American Sign Language".toLowerCase().includes(filter.toLowerCase())) {
+        if (!combinedList.includes("ASL American Sign Language")) {
+          combinedList.push("ASL American Sign Language");
+          asl.style.display = 'none'
+        }
+      }
+
+      combinedList.forEach(langKey => {
+        const detail = languageDetails[langKey] || {
+          name: langKey,
+          desc: "",
+          img: "images/deafy logo.png"
+        };
+
+        if (
+          detail.name.toLowerCase().includes(filter.toLowerCase()) ||
+          detail.desc.toLowerCase().includes(filter.toLowerCase())
+        ) {
+          const item = document.createElement("div");
+          item.classList.add("list-item");
+          item.innerHTML = `
+            <img src="${detail.img}" alt="${detail.name}">
             <div class="list-item-text">
-                <h3>American Sign Language (ASL)</h3>
-                <p>Used Primarily in the United States and Canada.</p>
+              <h3>${detail.name}</h3>
+              <p>${detail.desc}</p>
             </div>
             <img src="images/check.png" alt="Downloaded">
-        </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <div class="footer">
-            <a href="home.html">
-                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
-                Home
-            </a>
-            <a href="courses.html">
-                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
-                Courses
-            </a>
-            <a href="profile.html">
-                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
-                Profile
-            </a>
-        </div>
-    </div>
+          `;
+          downloadedList.appendChild(item);
+        }
+      });
+    }
+
+    // Initial render
+    renderLanguages();
+
+    // Search functionality
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim();
+      renderLanguages(query);
+    });
+  </script>
 </body>
 </html>
