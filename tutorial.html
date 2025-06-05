@@ -1,136 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Language App</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f8ff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Language App</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f8ff;
+    }
 
-        .container {
-        max-width: 400px;
-        margin: 0 auto;
-        background-color: rgb(255, 255, 255);
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 60px; /* add this line */
-        box-sizing: border-box;
-        }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 60px;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
 
-        .header h2 {
-            margin: 0;
-            font-size: 18px;
-        }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
 
-        .video-container {
-            margin: 10px;
-            position: relative;
-            border-radius: 15px;
-            overflow: hidden;
-            padding-bottom: 100%; /* Make it square */
-            height: 0;
-        }
+    .header img {
+      width: 30px;
+      height: 30px;
+    }
 
-        .video-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Maintain aspect ratio and cover container */
-        }
+    .filter-bar {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px;
+      gap: 10px;
+      scrollbar-width: none;
+    }
 
-        .video-title {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 10px;
-            text-align: center;
-            margin: 0;
-        }
+    .filter-bar::-webkit-scrollbar {
+      display: none;
+    }
 
-        .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background-color: white;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 10px 0;
-        border-top: 1px solid #ddd;
-        z-index: 1000;
-        }
+    .filter-button {
+      flex: 0 0 auto;
+      padding: 8px 16px;
+      border-radius: 25px;
+      background-color: #fff;
+      border: 1px solid #888;
+      font-size: 14px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-        .footer a {
-            text-decoration: none;
-            color: #888;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .filter-button:hover {
+      background-color: #eee;
+    }
 
-        footer a img {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 5px;
-        }
-    </style>
+    .filter-button.active {
+      background-color: #333;
+      color: #fff;
+      border-color: #333;
+    }
+
+    .videos-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 10px;
+      min-height: 400px; /* Prevent shrinking on filter change */
+    }
+
+    .video-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-thumbnail {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: #ccc;
+      background-size: cover;
+      background-position: center;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-thumbnail video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-title {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #333;
+      text-align: left;
+      padding-left: 2px;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+      z-index: 1000;
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #888;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .footer a img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 3px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-        <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
-            <h2>Tutorials</h2>
-            <h2></h2>
-        </div>
-
-        <div class="video-container">
-            <video src="videos/Basic ASL Conversation.mp4" controls></video>
-            <h3 class="video-title">Basic ASL Phrases</h3>
-        </div>
-
-        <div class="video-container">
-            <video src="videos/Basic ASL Conversation.mp4" controls></video>
-            <h3 class="video-title">Basic ASL Phrases</h3>
-        </div>
-
-        <div class="video-container">
-            <video src="videos/Basic ASL Conversation.mp4" controls></video>
-            <h3 class="video-title">Basic ASL Phrases</h3>
-        </div>
-
-        <div class="footer">
-            <a href="home.html">
-                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
-                Home
-            </a>
-            <a href="courses.html">
-                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
-                Courses
-            </a>
-            <a href="profile.html">
-                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
-                Profile
-            </a>
-        </div>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <img src="images/deafy logo.png" alt="Logo">
+      <h2>Tutorials</h2>
+      <div style="width:30px;"></div>
     </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <button class="filter-button active" data-filter="all">All</button>
+      <button class="filter-button" data-filter="phrases">Phrases</button>
+      <button class="filter-button" data-filter="greetings">Greetings</button>
+      <button class="filter-button" data-filter="alphabet">Alphabet</button>
+      <button class="filter-button" data-filter="numbers">Numbers</button>
+    </div>
+
+    <!-- Videos -->
+    <div class="videos-grid">
+      <div class="video-card" data-category="phrases">
+        <div class="video-thumbnail" style="background-image: url('images/thumbnail1.jpg');">
+          <video src="videos/100-signs.mp4" controls muted></video>
+        </div>
+        <div class="video-title">Basic ASL Phrases</div>
+      </div>
+      <div class="video-card" data-category="greetings">
+        <div class="video-thumbnail" style="background-image: url('images/thumbnail2.jpg');">
+          <video src="videos/Greetings.mp4" controls muted></video>
+        </div>
+        <div class="video-title">Common ASL Greetings</div>
+      </div>
+      <div class="video-card" data-category="alphabet">
+        <div class="video-thumbnail" style="background-image: url('images/thumbnail3.jpg');">
+          <video src="videos/Alphabet.mp4" controls muted></video>
+        </div>
+        <div class="video-title">ASL Alphabet</div>
+      </div>
+      <div class="video-card" data-category="numbers">
+        <div class="video-thumbnail" style="background-image: url('images/thumbnail4.jpg');">
+          <video src="videos/Numbers.mp4" controls muted></video>
+        </div>
+        <div class="video-title">ASL Numbers 1–10</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <a href="home.html">
+        <img src="images/home.png" alt="Home">
+        Home
+      </a>
+      <a href="courses.html">
+        <img src="images/to-do-list.png" alt="Courses">
+        Courses
+      </a>
+      <a href="profile.html">
+        <img src="images/user.png" alt="Profile">
+        Profile
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Filter functionality
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const videoCards = document.querySelectorAll('.video-card');
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+
+        // Update button active state
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        // Show/hide video cards
+        videoCards.forEach(card => {
+          if (filter === 'all' || card.dataset.category === filter) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('Service Worker registered:', reg.scope))
+          .catch(err => console.error('Service Worker registration failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>
