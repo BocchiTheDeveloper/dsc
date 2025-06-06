@@ -3,36 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Language App</title>
+  <title>Profile Page</title>
   <style>
-    @keyframes shine {
-      0% {
-        transform: rotate(25deg) translateX(-100%);
-      }
-      100% {
-        transform: rotate(25deg) translateX(100%);
-      }
-    }
-
-    .shine-effect::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.5) 50%,
-        rgba(255, 255, 255, 0.2) 100%
-      );
-      transform: rotate(25deg);
-      pointer-events: none;
-      animation: shine 3s infinite;
-      z-index: 2;
-    }
-
     body {
       font-family: sans-serif;
       margin: 0;
@@ -44,160 +16,81 @@
       max-width: 400px;
       margin: 0 auto;
       background: linear-gradient(to bottom, skyblue, lightblue);
-      min-height: 100vh;
+      min-height: 165vh;
       display: flex;
       flex-direction: column;
-      padding-bottom: 70px;
+      align-items: center;
+      padding: 20px;
       box-sizing: border-box;
     }
 
     .header {
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
-      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+      margin-bottom: 20px;
     }
 
     .header img {
-      width: 30px;
-      height: 30px;
+      width: 24px;
+      height: 24px;
     }
 
-    .header h2 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .grid-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 20px;
-    }
-
-    .grid-item {
-      position: relative;
-      overflow: hidden;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      color: white;
+    .profile-info {
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      box-sizing: border-box;
-    }
-
-    .grid-item a {
-      text-decoration: none;
-      color: inherit;
       width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      margin-bottom: 20px;
     }
 
-    .grid-item img {
-      width: 40px;
-      height: 40px;
+    .profile-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #ddd;
       margin-bottom: 10px;
     }
 
-    .grid-item h3 {
-      margin: 5px 0;
-      font-size: 16px;
+    .profile-name {
+      font-size: 20px;
+      margin-bottom: 5px;
     }
 
-    .grid-item p {
-      margin: 0;
-      font-size: 12px;
+    .profile-icon {
+      width: 24px;
+      height: 24px;
     }
 
-    .grid-item:nth-child(1) {
-      background: linear-gradient(to bottom, #b71c1c, #f44336);
-    }
-
-    .grid-item:nth-child(2) {
-      background: linear-gradient(to bottom, #1a237e, #3f51b5);
-    }
-
-    .grid-item:nth-child(3) {
-      background: linear-gradient(to bottom, #fbc02d, #fff176);
-      color: black;
-    }
-
-    .grid-item:nth-child(4) {
-      background: linear-gradient(to bottom, #8e24aa, #f48fb1);
-    }
-
-    .promo {
-      margin: 10px;
-      padding: 20px;
-      color: white;
-      border-radius: 15px;
-      box-sizing: border-box;
-      position: relative;
-      overflow: hidden;
+    .search-certificates {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 20px;
     }
 
-    .promo img {
-      width: 50px;
-      height: 50px;
-      align-self: flex-end;
+    .search-certificates input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-right: 10px;
     }
 
-    .promo h2 {
-      margin: 5px 0;
-      font-size: 18px;
-      text-align: left;
-    }
-
-    .promo p {
-      margin: 5px 0;
-      font-size: 14px;
-      text-align: left;
-    }
-
-    .promo button {
-      background: linear-gradient(to bottom, #2196f3, #2196f3 50%, white 50%, white);
-      background-size: 100% 200%;
-      background-position: 0% 0%;
-      color: white;
-      padding: 10px 20px;
+    .search-certificates button {
+      background-color: #e0e0e0;
       border: none;
+      padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-position 0.3s ease;
-      align-self: flex-start;
     }
 
-    .promo button:hover {
-      background-position: 0% 100%;
-      color: #2196f3;
-    }
-
-    .promo .corner-text {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      text-align: right;
-    }
-
-    .promo .corner-text p {
-      font-size: 12px;
-      margin: 0;
-    }
-
-    .promo .corner-text h2 {
-      font-size: 16px;
-      margin: 5px 0 0 0;
+    .downloaded-languages {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
     .footer {
@@ -220,94 +113,177 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin: 0 10px;
     }
 
-    .footer a img {
+    footer a img {
       width: 24px;
       height: 24px;
       margin-bottom: 5px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+      position: relative;
+      width: 100%;
+    }
+
+    .list-item img {
+      width: 40px;
+      height: 40px;
+      margin-right: 15px;
+    }
+
+    .list-item-text {
+      flex-grow: 1;
+    }
+
+    .list-item-text h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .list-item-text p {
+      margin: 5px 0;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .list-item button {
+      background: none;
+      border: none;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <img src="images/deafy logo.png" alt="Logo" />
-      <h2>Home</h2>
+      <h2></h2>
+      <span>Profile</span>
       <h2></h2>
     </div>
-
-    <div class="grid-container">
-      <div class="grid-item">
-        <a href="gesture2.html">
-          <img src="images/3d-animated.png" alt="3D Animated">
-          <h3>3D Animated Translation</h3>
-          <p>Input text and instantly translate into sign language</p>
-        </a>
-      </div>
-      <div class="grid-item">
-        <a href="gesture.html">
-          <img src="images/gesture-recognition.png" alt="Gesture Recognition">
-          <h3>Gesture Recognition</h3>
-          <p>Real-time gesture recognition translates sign language into text</p>
-        </a>
-      </div>
-      <div class="grid-item">
-        <a href="tutorial.html">
-          <img src="images/tutorial.png" alt="Tutorial">
-          <h3>Tutorial</h3>
-          <p>Basic sign language tutorials</p>
-        </a>
-      </div>
-      <div class="grid-item">
-        <a href="offline.html">
-          <img src="images/offline.png" alt="Offline Functionality">
-          <h3>Offline Functionality</h3>
-          <p>Download data sets of sign languages</p>
-        </a>
-      </div>
+    <div class="profile-info">
+      <img class="profile-image" src="images/man.png" alt="Profile"/>
+      <div class="profile-name">User <img src="images/diamond.png" alt="Diamond" class="profile-icon"></div>
+    </div>
+    <div class="search-certificates">
+      <input type="text" id="searchInput" placeholder="Search" />
+      <a href="certificates.html"><button>Certificates</button></a>
+    </div>
+    <div class="downloaded-languages">
+      <h2>Downloaded Sign Languages</h2>
+      <div class="list-item checked" data-language="ASL American Sign Language" id="asl">
+          <img src="images/deafy logo.png" alt="ASL">
+          <div class="list-item-text">
+            <h3>American Sign Language (ASL)</h3>
+            <p>Used Primarily in the United States and Canada.</p>
+          </div>
+          <img src="images/check.png" alt="Downloaded">
+        </div>
+      <div id="downloaded-list"></div>
     </div>
 
-    <a href="premium.html" style="text-decoration: none;">
-      <div class="promo shine-effect" style="background: linear-gradient(to bottom, #e65100, #ff9800);">
-        <h2>ELEVATE YOUR<br>EXPERIENCE<br>TODAY</h2>
-        <p>TRY OUR PREMIUM MODE</p>
-        <button>BUY NOW</button>
-        <img src="images/premium-img.png" style="width: 290px; height: 200px; position: absolute; left: 40%; top: 8%; z-index: 1;">
-      </div>
-    </a>
-
-    <a href="courses.html" style="text-decoration: none;">
-      <div class="promo" style="background: linear-gradient(to bottom, #bf360c, #f46f36);">
-        <div class="corner-text" style="position: absolute; z-index: 3; top: 10px; right: 15px; text-align: right;">
-          <br>
-          <p>PURCHASE PREMIUM NOW AND GET ACCESS<br>TO DIFFERENT SIGN LANGUAGE COURSES</p>
-          <br>
-          <h2 style="margin-left: 29px;">Your Hands, Your Voice.</h2>
-          <br>
-        </div>
-        <img src="images/courses-img.png" style="width: 250px; height: 150px; position: absolute; left: -5%; top: 2%;">
-        <br>
-        <br>
-        <br>
-        <img src="images/certificate.png" alt="Courses" style="margin-right: -10px;">
-      </div>
-    </a>
+    <div class="footer">
+      <a href="home.html">
+        <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
+        Home
+      </a>
+      <a href="courses.html">
+        <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
+        Courses
+      </a>
+      <a href="profile.html">
+        <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
+        Profile
+      </a>
+    </div>
   </div>
 
-  <div class="footer">
-    <a href="home.html">
-      <img src="images/home.png" alt="Home">
-      Home
-    </a>
-    <a href="courses.html">
-      <img src="images/to-do-list.png" alt="Courses">
-      Courses
-    </a>
-    <a href="profile.html">
-      <img src="images/user.png" alt="Profile">
-      Profile
-    </a>
-  </div>
+  <script>
+    const downloadedLanguages = JSON.parse(localStorage.getItem('downloadedLanguages')) || [];
+
+    const downloadedList = document.getElementById('downloaded-list');
+    const searchInput = document.getElementById('searchInput');
+
+    const languageDetails = {
+      "ASL American Sign Language": {
+        name: "American Sign Language (ASL)",
+        desc: "Used Primarily in the United States and Canada.",
+        img: "images/deafy logo.png"
+      },
+      "BSL British Sign Language": {
+        name: "British Sign Language (BSL)",
+        desc: "Used in the United Kingdom. Completely different from ASL.",
+        img: "images/deafy logo.png"
+      },
+      "LSF French Sign Language": {
+        name: "French Sign Language (LSF)",
+        desc: "Used in France and French-speaking areas.",
+        img: "images/deafy logo.png"
+      },
+      "JSL Japanese Sign Language": {
+        name: "Japanese Sign Language (JSL)",
+        desc: "Used in Japan. Has its own unique features and cultural context.",
+        img: "images/deafy logo.png"
+      },
+      "CSL Chinese Sign Language": {
+        name: "Chinese Sign Language (CSL)",
+        desc: "Used in China with Regional Variations.",
+        img: "images/deafy logo.png"
+      }
+    };
+
+    let asl = document.getElementById('asl');
+
+    function renderLanguages(filter = "") {
+      downloadedList.innerHTML = "";
+      let combinedList = [...downloadedLanguages];
+
+      if (filter.trim().length > 0 && "ASL American Sign Language".toLowerCase().includes(filter.toLowerCase())) {
+        if (!combinedList.includes("ASL American Sign Language")) {
+          combinedList.push("ASL American Sign Language");
+          asl.style.display = 'none'
+        }
+      }
+
+      combinedList.forEach(langKey => {
+        const detail = languageDetails[langKey] || {
+          name: langKey,
+          desc: "",
+          img: "images/deafy logo.png"
+        };
+
+        if (
+          detail.name.toLowerCase().includes(filter.toLowerCase()) ||
+          detail.desc.toLowerCase().includes(filter.toLowerCase())
+        ) {
+          const item = document.createElement("div");
+          item.classList.add("list-item");
+          item.innerHTML = `
+            <img src="${detail.img}" alt="${detail.name}">
+            <div class="list-item-text">
+              <h3>${detail.name}</h3>
+              <p>${detail.desc}</p>
+            </div>
+            <img src="images/check.png" alt="Downloaded">
+          `;
+          downloadedList.appendChild(item);
+        }
+      });
+    }
+
+    // Initial render
+    renderLanguages();
+
+    // Search functionality
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim();
+      renderLanguages(query);
+    });
+  </script>
 </body>
 </html>
