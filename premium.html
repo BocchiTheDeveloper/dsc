@@ -15,7 +15,7 @@
         .container {
             max-width: 400px;
             margin: 0 auto;
-            background-color: white;
+            background: linear-gradient(to right, #4169e1, lightblue);
             height: 120vh;
             display: flex;
             flex-direction: column;
@@ -163,28 +163,28 @@
 <body>
     <div class="container">
         <img class="profile-image" src="images/man.png" alt="Profile">
-        <div class="user-type">FREEMIUM USER</div>
-        <div class="subscription-prompt">Subscribe and unlock new features!</div>
-        <div class="one-time-payment" data-price="2,999">
+        <div class="user-type" style="color: darkblue;">FREEMIUM USER</div>
+        <div class="subscription-prompt">Buy our subscription and unlock new features!</div>
+        <div class="one-time-payment" data-price="2,999" style="border: 3px solid white;">
             <strong>One Time Payment</strong>
             <span>Click Here!</span>
             ₱ 2,999
         </div>
         <div class="unlimited-translation">
             <img src="images/blue-check.png" alt="Check">
-            <p>Get access to Faster Translation, Educational Tools, and Multiple Languages</p>
-            ---
+            <p style="color: darkblue;">Get access to Faster Translation, Educational Tools, and Multiple Languages</p>
+            <br>
         </div>
         <div class="duration-options">
-            <div data-price="29">
+            <div data-price="29" style="border: 1px solid white;">
                 <strong>1 week</strong>
                 <span>₱ 29</span>
             </div>
-            <div data-price="99">
+            <div data-price="99" style="border: 1px solid white;">
                 <strong>1 month</strong>
                 <span>₱ 99</span>
             </div>
-            <div data-price="999">
+            <div data-price="999" style="border: 1px solid white;">
                 <strong>1 year</strong>
                 <span>₱ 999</span>
             </div>
