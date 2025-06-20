@@ -254,20 +254,6 @@
     const filterButton = document.getElementById('filter-button');
     const languageList = document.getElementById('language-list');
 
-    // Load already downloaded languages
-    const downloadedLanguages = JSON.parse(localStorage.getItem('downloadedLanguages')) || [];
-
-    document.querySelectorAll('.list-item').forEach(item => {
-        const langKey = item.dataset.language;
-        const alreadyDownloaded = downloadedLanguages.includes(langKey);
-
-        if (alreadyDownloaded) {
-            const button = item.querySelector('.download-button');
-            if (button) button.remove();
-            item.innerHTML += '<img src="images/check.png" alt="Downloaded">';
-        }
-    });
-
     filterButton.addEventListener('click', () => {
         const filterText = filterInput.value.trim().toLowerCase();
         const listItems = languageList.querySelectorAll('.list-item');
