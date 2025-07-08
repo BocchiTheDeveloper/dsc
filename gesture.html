@@ -63,6 +63,10 @@
       object-fit: cover;
     }
 
+    .flipped {
+      transform: scaleX(-1);
+    }
+
     #hand-canvas {
       z-index: 1;
       pointer-events: none;
@@ -272,21 +276,23 @@
     }
 
     async function startCamera(facingMode = 'environment') {
-      if (cameraInstance) {
-        cameraInstance.stop();
-        cameraInstance = null;
-      }
-
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-
       try {
+        if (cameraInstance) {
+          cameraInstance.stop();
+          cameraInstance = null;
+        }
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+
         stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: { exact: facingMode } }
         });
 
         videoElement.srcObject = stream;
+
+        // Flip only if front camera
+        videoElement.classList.toggle('flipped', facingMode === 'user');
 
         cameraInstance = new Camera(videoElement, {
           onFrame: async () => await hands.send({ image: videoElement }),
@@ -295,8 +301,15 @@
         });
 
         cameraInstance.start();
+        currentFacingMode = facingMode;
       } catch (error) {
-        console.error('Camera error:', error);
+        console.warn(`⚠️ Could not access ${facingMode} camera:`, error);
+        if (facingMode === 'environment') {
+          // Retry with front camera
+          startCamera('user');
+        } else {
+          alert("🚫 Unable to access camera. Please check your device's permissions.");
+        }
       }
     }
 
@@ -306,8 +319,8 @@
     });
 
     toggleBtn.addEventListener('click', () => {
-      currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
-      startCamera(currentFacingMode);
+      const nextMode = currentFacingMode === 'user' ? 'environment' : 'user';
+      startCamera(nextMode);
     });
 
     startCamera(currentFacingMode);
