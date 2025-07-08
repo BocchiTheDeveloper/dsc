@@ -216,7 +216,6 @@
     const loadingSpinner = document.getElementById('loading-spinner');
     const toggleBtn = document.getElementById('toggle-camera');
 
-    let currentFacingMode = 'environment';
     let stream = null;
     let cameraInstance = null;
 
@@ -272,7 +271,7 @@
       canvasCtx.restore();
     }
 
-    async function startCamera(facingMode = 'environment') {
+    async function startCamera(facingMode) {
       if (cameraInstance) {
         cameraInstance.stop();
         cameraInstance = null;
@@ -281,17 +280,27 @@
         stream.getTracks().forEach(track => track.stop());
       }
 
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
-      videoElement.srcObject = stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+        videoElement.srcObject = stream;
 
-      cameraInstance = new Camera(videoElement, {
-        onFrame: async () => await hands.send({ image: videoElement }),
-        width: 640,
-        height: 480
-      });
+        cameraInstance = new Camera(videoElement, {
+          onFrame: async () => await hands.send({ image: videoElement }),
+          width: 640,
+          height: 480
+        });
 
-      cameraInstance.start();
+        await cameraInstance.start();
+      } catch (error) {
+        console.error("Error accessing camera:", error);
+      }
     }
+
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    let currentFacingMode = isMobile() ? 'environment' : 'user';
 
     videoElement.addEventListener('loadedmetadata', () => {
       canvasElement.width = videoElement.videoWidth;
