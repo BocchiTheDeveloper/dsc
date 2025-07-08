@@ -61,7 +61,6 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scaleX(-1);
     }
 
     #hand-canvas {
@@ -216,6 +215,7 @@
     const loadingSpinner = document.getElementById('loading-spinner');
     const toggleBtn = document.getElementById('toggle-camera');
 
+    let currentFacingMode = 'environment';
     let stream = null;
     let cameraInstance = null;
 
@@ -271,17 +271,21 @@
       canvasCtx.restore();
     }
 
-    async function startCamera(facingMode) {
+    async function startCamera(facingMode = 'environment') {
       if (cameraInstance) {
         cameraInstance.stop();
         cameraInstance = null;
       }
+
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
 
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode } });
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { exact: facingMode } }
+        });
+
         videoElement.srcObject = stream;
 
         cameraInstance = new Camera(videoElement, {
@@ -290,17 +294,11 @@
           height: 480
         });
 
-        await cameraInstance.start();
+        cameraInstance.start();
       } catch (error) {
-        console.error("Error accessing camera:", error);
+        console.error('Camera error:', error);
       }
     }
-
-    function isMobile() {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    }
-
-    let currentFacingMode = isMobile() ? 'environment' : 'user';
 
     videoElement.addEventListener('loadedmetadata', () => {
       canvasElement.width = videoElement.videoWidth;
