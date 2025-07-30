@@ -1,202 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Language App - Gesture Recognition</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f8ff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Language App - Gesture Recognition</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f8ff;
+    }
 
-        .container {
-        max-width: 400px;
-        margin: 0 auto;
-        background-color: white;
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 60px; /* add this line */
-        box-sizing: border-box;
-        }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 100px;
+      box-sizing: border-box;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-        }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
 
-        .header h2 {
-            margin: 0;
-            font-size: 18px;
-        }
+    .header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
 
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .video-container {
-            background-color: #e0e0e0;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .video-container img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .translation-box {
-            margin-bottom: 10px;
-        }
-
-        .translation-box textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            resize: none;
-        }
-
-        .translation-box button {
-            width: 100%;
-            padding: 10px;
-            background-color: #2196f3;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .control-item {
-            background-color: #e0e0e0;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .control-item img {
-            width: 30px;
-            height: 30px;
-            margin-bottom: 5px;
-        }
-
-        .control-item h3 {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-
-        .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
+    .video-container {
+        background-color: #e0e0e0;
+        border-radius: 10px;
+        padding: 10px;
+        text-align: center;
+        margin: 0 auto 10px auto; /* center horizontally */
         width: 100%;
-        background-color: white;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 10px 0;
-        border-top: 1px solid #ddd;
-        z-index: 1000;
-        }
+        max-width: 300px; /* you can adjust this */
+        aspect-ratio: 1 / 1;
+        position: relative;
+    }
 
 
-        .footer a {
-            text-decoration: none;
-            color: #888;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .video-container video,
+    .video-container img {
+      width: 100%;
+      height: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+    }
 
-        footer a img {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 5px;
-        }
-    </style>
+    .video-controls {
+      display: none;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+
+    .video-controls button {
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      background-color: #2196f3;
+      color: white;
+      cursor: pointer;
+    }
+
+    .translation-box {
+      margin-bottom: 10px;
+    }
+
+    .translation-box textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+      resize: none;
+    }
+
+    .translation-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .control-item {
+      background-color: #e0e0e0;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .control-item img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+
+    .control-item h3 {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid #ddd;
+      z-index: 1000;
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #888;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    footer a img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="images/deafy logo.png" style="width: 30px; height: 30px;">
-            <h2>Text to Sign</h2>
-            <h2></h2>
-        </div>
-
-        <div class="content">
-            <div class="video-container">
-                <img id="gesture-image" src="images/default.jpg" alt="Gesture Video">
-            </div>
-
-            <div class="translation-box">
-                <textarea style="height: 80px;" id="text-input" placeholder="Try typing 'i love you'"></textarea>
-                <button id="enter-button">Enter</button>
-            </div>
-            <div class="controls">
-                <div class="control-item">
-                    <a href="gesture.html" style="text-decoration: none; color: black;">
-                    <img src="images/swap.png" alt="Change Mode">
-                    <h3>Change Mode</h3>
-                    </a>
-                </div>
-                <div class="control-item">
-                    <a href="offline.html" style="text-decoration: none; color: black;">
-                    <img src="images/language.png" alt="Language Options">
-                    <h3>Language Options</h3>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <a href="home.html">
-                <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;">
-                Home
-            </a>
-            <a href="courses.html">
-                <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;">
-                Courses
-            </a>
-            <a href="profile.html">
-                <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;">
-                Profile
-            </a>
-        </div>
+  <div class="container">
+    <div class="header">
+      <img src="images/deafy logo.png" style="width: 30px; height: 30px;" />
+      <h2>Text to Sign</h2>
+      <h2></h2>
     </div>
 
-    <script>
-        const textInput = document.getElementById('text-input');
-        const enterButton = document.getElementById('enter-button');
-        const gestureImage = document.getElementById('gesture-image');
+    <div class="content">
+      <div class="video-container">
+        <video id="gesture-video" style="display: none;" controlsList="nodownload" preload="auto"></video>
+        <img id="gesture-image" style="display: none;" src="" alt="Gesture" />
+      </div>
 
-        enterButton.addEventListener('click', () => {
-            if (textInput.value.trim().toLowerCase() === 'i love you') {
-                gestureImage.src = 'images/ily.jpg'; // Replace with your image path
-            } else {
-                gestureImage.src = 'images/unavailable.jpg'; // Replace with your image path
-            }
-        });
-    </script>
+      <div class="video-controls" id="video-controls">
+        <button id="loop-button">Loop</button>
+        <button id="pause-button">Pause</button>
+        <button id="replay-button">Replay</button>
+      </div>
+
+      <div class="translation-box">
+        <textarea style="height: 80px;" id="text-input" placeholder="Try typing 'Hello'"></textarea>
+        <button id="enter-button">Enter</button>
+      </div>
+
+      <div class="controls">
+        <div class="control-item">
+          <a href="gesture.html" style="text-decoration: none; color: black;">
+            <img src="images/swap.png" alt="Change Mode" />
+            <h3>Change Mode</h3>
+          </a>
+        </div>
+        <div class="control-item">
+          <a href="offline.html" style="text-decoration: none; color: black;">
+            <img src="images/language.png" alt="Language Options" />
+            <h3>Language Options</h3>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <a href="home.html">
+        <img src="images/home.png" alt="Home" style="width: 25px; height: 25px;" />
+        Home
+      </a>
+      <a href="courses.html">
+        <img src="images/to-do-list.png" alt="Courses" style="width: 25px; height: 25px;" />
+        Courses
+      </a>
+      <a href="profile.html">
+        <img src="images/user.png" alt="Profile" style="width: 25px; height: 25px;" />
+        Profile
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const video = document.getElementById("gesture-video");
+    const image = document.getElementById("gesture-image");
+    const loopButton = document.getElementById("loop-button");
+    const pauseButton = document.getElementById("pause-button");
+    const replayButton = document.getElementById("replay-button");
+    const controls = document.getElementById("video-controls");
+    const textInput = document.getElementById("text-input");
+    const enterButton = document.getElementById("enter-button");
+
+    const phraseMap = {
+      "hello": "videos/hello-animation.mp4",
+      "hello!": "videos/hello-animation.mp4",
+      "hi": "videos/hello-animation.mp4",
+      "hi!": "videos/hello-animation.mp4",
+      "goodbye": "videos/goodbye-animation.mp4",
+      "goodbye!": "videos/goodbye-animation.mp4",
+      "bye": "videos/goodbye-animation.mp4",
+      "bye!": "videos/goodbye-animation.mp4",
+      "please": "videos/please-animation.mp4",
+      "please!": "videos/please-animation.mp4",
+      "thank you": "videos/thanks-animation.mp4",
+      "thank you!": "videos/thanks-animation.mp4",
+      "thanks": "videos/thanks-animation.mp4",
+      "thanks!": "videos/thanks-animation.mp4",
+      "sorry": "videos/sorry-animation.mp4",
+      "sorry!": "videos/sorry-animation.mp4",
+      "i'm sorry": "videos/sorry-animation.mp4",
+      "i'm sorry!": "videos/sorry-animation.mp4",
+      "excuse me": "videos/excuse-animation.mp4",
+      "yes": "videos/yes-animation.mp4",
+      "yes!": "videos/yes-animation.mp4",
+      "yes?": "videos/yes-animation.mp4",
+      "no": "videos/no-animation.mp4",
+      "no?": "videos/no-animation.mp4",
+      "no!": "videos/no-animation.mp4",
+      "repeat": "videos/again-animation.mp4",
+      "repeat what you said": "videos/again-animation.mp4",
+      "again": "videos/again-animation.mp4",
+      "who": "videos/who-animation.mp4",
+      "who?": "videos/who-animation.mp4",
+      "what": "videos/what-animation.mp4",
+      "what?": "videos/what-animation.mp4",
+      "why": "videos/why-animation.mp4",
+      "why?": "videos/why-animation.mp4",
+      "when": "videos/when-animation.mp4",
+      "when?": "videos/when-animation.mp4",
+      "where": "videos/where-animation.mp4",
+      "where?": "videos/where-animation.mp4",
+      "good": "videos/15.mp4",
+      "bad": "videos/16.mp4",
+      "how are you": "videos/17.mp4",
+      "how are you?": "videos/17.mp4"
+    };
+
+    let isLooping = false;
+
+    video.addEventListener("ended", () => {
+      if (!isLooping) {
+        video.pause();
+        video.currentTime = video.duration;
+      }
+    });
+
+    loopButton.addEventListener("click", () => {
+      isLooping = !isLooping;
+      video.loop = isLooping;
+      loopButton.textContent = isLooping ? "Stop loop" : "Loop video";
+    });
+
+    pauseButton.addEventListener("click", () => {
+      video.pause();
+    });
+
+    replayButton.addEventListener("click", () => {
+      video.currentTime = 0;
+      video.play();
+    });
+
+    enterButton.addEventListener("click", () => {
+      const input = textInput.value.trim().toLowerCase();
+
+      if (input === "i love you") {
+        video.style.display = "none";
+        image.src = "images/ily.jpg";
+        image.style.display = "block";
+        controls.style.display = "none";
+      } else if (phraseMap[input]) {
+        video.src = phraseMap[input];
+        video.style.display = "block";
+        image.style.display = "none";
+        controls.style.display = "flex";
+        video.load();
+        video.play();
+      } else {
+        video.style.display = "none";
+        image.src = "images/unavailable.jpg";
+        image.style.display = "block";
+        controls.style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>
+\
