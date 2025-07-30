@@ -254,6 +254,26 @@
     const filterButton = document.getElementById('filter-button');
     const languageList = document.getElementById('language-list');
 
+    // Check and apply previously downloaded languages
+window.addEventListener('DOMContentLoaded', () => {
+    const stored = JSON.parse(localStorage.getItem('downloadedLanguages')) || [];
+    const listItems = document.querySelectorAll('.list-item');
+
+    listItems.forEach(item => {
+        const language = item.dataset.language;
+        if (stored.includes(language)) {
+            const downloadButton = item.querySelector('.download-button');
+            const loadingBar = item.querySelector('.loading-bar');
+
+            if (downloadButton) downloadButton.remove();
+            if (loadingBar) loadingBar.remove();
+
+            item.innerHTML += '<img src="images/check.png" alt="Downloaded">';
+        }
+    });
+});
+
+
     filterButton.addEventListener('click', () => {
         const filterText = filterInput.value.trim().toLowerCase();
         const listItems = languageList.querySelectorAll('.list-item');
