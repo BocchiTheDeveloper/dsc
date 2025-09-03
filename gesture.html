@@ -253,27 +253,37 @@
     }
 
     function onResults(results) {
-      loadingSpinner.style.display = 'none';
-      canvasCtx.save();
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+  loadingSpinner.style.display = 'none';
 
-      if (results.multiHandLandmarks) {
-        for (const landmarks of results.multiHandLandmarks) {
-          drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
-          drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
-          const gesture = detectGesture(landmarks);
-          translationOutput.textContent = {
-            "peace": "✌️ Peace Sign",
-            "thumbs up": "👍 Thumbs Up",
-            "hand": "🖐 Hand"
-          }[gesture] || "Translation";
-        }
-      } else {
-        translationOutput.textContent = "Translation";
-      }
-      canvasCtx.restore();
-    }
+  canvasCtx.save();
+  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+  // Mirror canvas only if front camera is active
+  if (currentFacingMode === 'user') {
+    canvasCtx.translate(canvasElement.width, 0);
+    canvasCtx.scale(-1, 1);
+  }
+
+  canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+  if (results.multiHandLandmarks) {
+    for (const landmarks of results.multiHandLandmarks) {
+      drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+      drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
+      const gesture = detectGesture(landmarks);
+      translationOutput.textContent = {
+        "peace": "✌️ Peace Sign",
+        "thumbs up": "👍 Thumbs Up",
+        "hand": "🖐 Hand"
+      }[gesture] || "Translation";
+  }
+    } else {
+    translationOutput.textContent = "Translation";
+  }
+
+  canvasCtx.restore();
+}
+
 
     async function startCamera(facingMode = 'environment') {
       try {
@@ -327,3 +337,4 @@
   </script>
 </body>
 </html>
+
