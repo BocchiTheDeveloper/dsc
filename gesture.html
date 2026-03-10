@@ -61,6 +61,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transform-origin: center;
     }
 
     .flipped {
@@ -70,6 +71,7 @@
     #hand-canvas {
       z-index: 1;
       pointer-events: none;
+      background: transparent;
     }
 
     .toggle-button {
@@ -111,6 +113,17 @@
       padding: 20px;
       text-align: center;
       margin-bottom: 10px;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .translation-box small {
+      color: #666;
+      font-size: 12px;
     }
 
     .controls {
@@ -180,7 +193,10 @@
         <p style="font-size: 12px; color: #555;">Loading AI...</p>
       </div>
 
-      <div class="translation-box" id="translation-output">Translation</div>
+      <div class="translation-box" id="translation-output">
+        <div>Translation</div>
+        <small id="translation-hint">Show a hand sign clearly in the frame</small>
+      </div>
 
       <div class="controls">
         <div class="control-item">
@@ -206,135 +222,389 @@
   </div>
 
   <!-- MediaPipe Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="assets/mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="assets/mediapipe/control_utils/control_utils.js"></script>
+  <script src="assets/mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="assets/mediapipe/hands/hands.js"></script>
 
   <script>
     const videoElement = document.getElementById('camera-feed');
     const canvasElement = document.getElementById('hand-canvas');
     const canvasCtx = canvasElement.getContext('2d');
     const translationOutput = document.getElementById('translation-output');
+    const translationHint = document.getElementById('translation-hint');
     const loadingSpinner = document.getElementById('loading-spinner');
     const toggleBtn = document.getElementById('toggle-camera');
 
     let currentFacingMode = 'environment';
     let stream = null;
     let cameraInstance = null;
+    let videoDevices = [];
+    let usingDeviceId = null;
+    let isProcessingFrame = false;
+    let lastProcessedAt = 0;
+    const PROCESS_EVERY_MS = 80; // lower = smoother, higher = less lag
+
+    // Keep recent predictions so the translation does not flicker.
+    const predictionHistory = [];
+    const HISTORY_SIZE = 8;
 
     const hands = new Hands({
       locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
     });
 
+    // Lower complexity and single-hand mode help reduce lag on mobile.
     hands.setOptions({
-      maxNumHands: 2,
-      modelComplexity: 1,
-      minDetectionConfidence: 0.5,
-      minTrackingConfidence: 0.5
+      maxNumHands: 1,
+      modelComplexity: 0,
+      minDetectionConfidence: 0.65,
+      minTrackingConfidence: 0.6
     });
 
     hands.onResults(onResults);
 
-    function detectGesture(landmarks) {
-      if (!landmarks) return null;
-      const [thumb, index, middle, ring, pinky] = [landmarks[4], landmarks[8], landmarks[12], landmarks[16], landmarks[20]];
+    function setTranslation(label, hint = '') {
+      translationOutput.firstElementChild.textContent = label;
+      translationHint.textContent = hint;
+    }
 
-      if (index.y < middle.y && middle.y < ring.y && ring.y < pinky.y && thumb.y > index.y) return "peace";
-      if (thumb.y < index.y && thumb.y < middle.y && thumb.y < ring.y && thumb.y < pinky.y) return "thumbs up";
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
 
-      const fingersApart = [index, middle, ring, pinky]
-        .map((f1, i, arr) => i < arr.length - 1 ? Math.abs(f1.x - arr[i + 1].x) > 0.05 : true)
-        .every(Boolean);
+    function distance(a, b) {
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    }
 
-      if (fingersApart) return "hand";
+    function averagePoint(points) {
+      const total = points.reduce((acc, p) => ({ x: acc.x + p.x, y: acc.y + p.y }), { x: 0, y: 0 });
+      return { x: total.x / points.length, y: total.y / points.length };
+    }
+
+    function getFingerState(landmarks, handedness = 'Right') {
+      const wrist = landmarks[0];
+      const thumbTip = landmarks[4];
+      const thumbIp = landmarks[3];
+      const indexTip = landmarks[8], indexPip = landmarks[6], indexMcp = landmarks[5];
+      const middleTip = landmarks[12], middlePip = landmarks[10], middleMcp = landmarks[9];
+      const ringTip = landmarks[16], ringPip = landmarks[14], ringMcp = landmarks[13];
+      const pinkyTip = landmarks[20], pinkyPip = landmarks[18], pinkyMcp = landmarks[17];
+
+      const isExtended = (tip, pip, mcp) => tip.y < pip.y && pip.y < mcp.y;
+      const isCurled = (tip, pip) => tip.y > pip.y;
+
+      // Thumb works better using x direction and distance from palm center.
+      const palmCenter = averagePoint([landmarks[0], landmarks[5], landmarks[9], landmarks[13], landmarks[17]]);
+      const thumbFarFromPalm = distance(thumbTip, palmCenter) > distance(thumbIp, palmCenter) * 1.1;
+      const thumbExtended = handedness === 'Left'
+        ? thumbTip.x > thumbIp.x && thumbFarFromPalm
+        : thumbTip.x < thumbIp.x && thumbFarFromPalm;
+
+      return {
+        thumb: thumbExtended,
+        index: isExtended(indexTip, indexPip, indexMcp),
+        middle: isExtended(middleTip, middlePip, middleMcp),
+        ring: isExtended(ringTip, ringPip, ringMcp),
+        pinky: isExtended(pinkyTip, pinkyPip, pinkyMcp),
+        curled: {
+          index: isCurled(indexTip, indexPip),
+          middle: isCurled(middleTip, middlePip),
+          ring: isCurled(ringTip, ringPip),
+          pinky: isCurled(pinkyTip, pinkyPip)
+        }
+      };
+    }
+
+    function detectGesture(landmarks, handedness = 'Right') {
+      if (!landmarks || landmarks.length < 21) return null;
+
+      const fingers = getFingerState(landmarks, handedness);
+      const thumbTip = landmarks[4];
+      const indexTip = landmarks[8];
+      const middleTip = landmarks[12];
+      const ringTip = landmarks[16];
+      const pinkyTip = landmarks[20];
+      const wrist = landmarks[0];
+
+      const indexMiddleGap = distance(indexTip, middleTip);
+      const thumbIndexGap = distance(thumbTip, indexTip);
+      const thumbIndexNear = thumbIndexGap < 0.05;
+      const indexPointingUp = indexTip.y < landmarks[6].y && indexTip.y < wrist.y;
+      const thumbAboveWrist = thumbTip.y < wrist.y - 0.08;
+      const thumbBelowWrist = thumbTip.y > wrist.y + 0.08;
+      const allOpen = fingers.thumb && fingers.index && fingers.middle && fingers.ring && fingers.pinky;
+      const noThumbNeededOpenPalm = fingers.index && fingers.middle && fingers.ring && fingers.pinky;
+      const fist = !fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && !fingers.thumb;
+
+      // 1) Hello / Open Hand
+      if (allOpen || noThumbNeededOpenPalm) {
+        return { text: '👋 Hello / Open Hand', raw: 'open_palm' };
+      }
+
+      // 2) Peace
+      if (fingers.index && fingers.middle && !fingers.ring && !fingers.pinky && indexMiddleGap > 0.04) {
+        return { text: '✌️ Peace', raw: 'peace' };
+      }
+
+      // 3) Pointing / One
+      if (fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && !fingers.thumb && indexPointingUp) {
+        return { text: '☝️ Point / One', raw: 'point' };
+      }
+
+      // 4) Thumbs Up
+      if (fingers.thumb && !fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && thumbAboveWrist) {
+        return { text: '👍 Thumbs Up', raw: 'thumbs_up' };
+      }
+
+      // 5) Thumbs Down
+      if (fingers.thumb && !fingers.index && !fingers.middle && !fingers.ring && !fingers.pinky && thumbBelowWrist) {
+        return { text: '👎 Thumbs Down', raw: 'thumbs_down' };
+      }
+
+      // 6) Fist / Stop
+      if (fist) {
+        return { text: '✊ Fist', raw: 'fist' };
+      }
+
+      // 7) Call Me
+      if (fingers.thumb && !fingers.index && !fingers.middle && !fingers.ring && fingers.pinky) {
+        return { text: '🤙 Call Me', raw: 'call_me' };
+      }
+
+      // 8) Rock Sign
+      if (!fingers.thumb && fingers.index && !fingers.middle && !fingers.ring && fingers.pinky) {
+        return { text: '🤘 Rock Sign', raw: 'rock' };
+      }
+
+      // 9) OK Sign
+      if (thumbIndexNear && fingers.middle && fingers.ring && fingers.pinky) {
+        return { text: '👌 OK', raw: 'ok' };
+      }
+
+      // 10) Three
+      if (!fingers.thumb && fingers.index && fingers.middle && fingers.ring && !fingers.pinky) {
+        return { text: '3️⃣ Three', raw: 'three' };
+      }
+
+      // 11) Four
+      if (!fingers.thumb && fingers.index && fingers.middle && fingers.ring && fingers.pinky) {
+        return { text: '4️⃣ Four', raw: 'four' };
+      }
+
+      // 12) I Love You
+      if (fingers.thumb && fingers.index && !fingers.middle && !fingers.ring && fingers.pinky) {
+        return { text: '🤟 I Love You', raw: 'ily' };
+      }
 
       return null;
     }
 
+    function smoothPrediction(prediction) {
+      if (!prediction) {
+        predictionHistory.push('none');
+      } else {
+        predictionHistory.push(prediction.raw);
+      }
+
+      if (predictionHistory.length > HISTORY_SIZE) {
+        predictionHistory.shift();
+      }
+
+      const counts = {};
+      for (const item of predictionHistory) {
+        counts[item] = (counts[item] || 0) + 1;
+      }
+
+      let best = 'none';
+      let bestCount = 0;
+      for (const key in counts) {
+        if (counts[key] > bestCount) {
+          best = key;
+          bestCount = counts[key];
+        }
+      }
+
+      if (bestCount < 3 || best === 'none') return null;
+
+      const labelMap = {
+        open_palm: '👋 Hello / Open Hand',
+        peace: '✌️ Peace',
+        point: '☝️ Point / One',
+        thumbs_up: '👍 Thumbs Up',
+        thumbs_down: '👎 Thumbs Down',
+        fist: '✊ Fist',
+        call_me: '🤙 Call Me',
+        rock: '🤘 Rock Sign',
+        ok: '👌 OK',
+        three: '3️⃣ Three',
+        four: '4️⃣ Four',
+        ily: '🤟 I Love You'
+      };
+
+      return labelMap[best] || null;
+    }
+
+    function clearCanvas() {
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    }
+
     function onResults(results) {
-  loadingSpinner.style.display = 'none';
+      loadingSpinner.style.display = 'none';
+      clearCanvas();
 
-  canvasCtx.save();
-  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+        const landmarks = results.multiHandLandmarks[0];
+        const handedness = results.multiHandedness?.[0]?.label || 'Right';
 
-  // Mirror canvas only if front camera is active
-  if (currentFacingMode === 'user') {
-    canvasCtx.translate(canvasElement.width, 0);
-    canvasCtx.scale(-1, 1);
-  }
+        drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+          color: '#00FF88',
+          lineWidth: 3
+        });
 
-  canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+        drawLandmarks(canvasCtx, landmarks, {
+          color: '#FF3B30',
+          lineWidth: 1,
+          radius: 3
+        });
 
-  if (results.multiHandLandmarks) {
-    for (const landmarks of results.multiHandLandmarks) {
-      drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
-      drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 2 });
-      const gesture = detectGesture(landmarks);
-      translationOutput.textContent = {
-        "peace": "✌️ Peace Sign",
-        "thumbs up": "👍 Thumbs Up",
-        "hand": "🖐 Hand"
-      }[gesture] || "Translation";
-  }
-    } else {
-    translationOutput.textContent = "Translation";
-  }
+        const prediction = detectGesture(landmarks, handedness);
+        const stablePrediction = smoothPrediction(prediction);
 
-  canvasCtx.restore();
-}
+        if (stablePrediction) {
+          setTranslation(stablePrediction, 'Gesture recognized');
+        } else if (prediction) {
+          setTranslation(prediction.text, 'Stabilizing prediction...');
+        } else {
+          setTranslation('Detecting...', 'Try centering one hand in the frame');
+        }
+      } else {
+        predictionHistory.push('none');
+        if (predictionHistory.length > HISTORY_SIZE) predictionHistory.shift();
+        setTranslation('Translation', 'Show a hand sign clearly in the frame');
+      }
 
+      isProcessingFrame = false;
+    }
+
+    function applyMirrorMode(facingMode) {
+      const shouldMirror = facingMode === 'user';
+      videoElement.classList.toggle('flipped', shouldMirror);
+      canvasElement.classList.toggle('flipped', shouldMirror);
+    }
+
+    async function getAvailableVideoDevices() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      videoDevices = devices.filter(device => device.kind === 'videoinput');
+      return videoDevices;
+    }
+
+    function pickBestRearCamera(devices) {
+      return devices.find(device => /back|rear|environment/gi.test(device.label)) || null;
+    }
+
+    function pickBestFrontCamera(devices) {
+      return devices.find(device => /front|user|facetime/gi.test(device.label)) || null;
+    }
+
+    async function stopCurrentCamera() {
+      if (cameraInstance) {
+        cameraInstance.stop();
+        cameraInstance = null;
+      }
+
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+    }
 
     async function startCamera(facingMode = 'environment') {
       try {
-        if (cameraInstance) {
-          cameraInstance.stop();
-          cameraInstance = null;
-        }
-        if (stream) {
-          stream.getTracks().forEach(track => track.stop());
-        }
+        loadingSpinner.style.display = 'block';
+        await stopCurrentCamera();
 
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { exact: facingMode } }
+        // Ask once for permission so labels become available on mobile browsers.
+        const warmupStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false
+        });
+        warmupStream.getTracks().forEach(track => track.stop());
+
+        const devices = await getAvailableVideoDevices();
+        const preferredDevice = facingMode === 'environment'
+          ? pickBestRearCamera(devices)
+          : pickBestFrontCamera(devices);
+
+        const constraints = preferredDevice
+          ? {
+              video: {
+                deviceId: { exact: preferredDevice.deviceId },
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+              },
+              audio: false
+            }
+          : {
+              video: {
+                facingMode: { ideal: facingMode },
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+              },
+              audio: false
+            };
+
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        usingDeviceId = preferredDevice ? preferredDevice.deviceId : null;
+        videoElement.srcObject = stream;
+        currentFacingMode = facingMode;
+        applyMirrorMode(facingMode);
+
+        await new Promise(resolve => {
+          videoElement.onloadedmetadata = () => {
+            canvasElement.width = videoElement.videoWidth || 640;
+            canvasElement.height = videoElement.videoHeight || 480;
+            resolve();
+          };
         });
 
-        videoElement.srcObject = stream;
-
-        // Flip only if front camera
-        videoElement.classList.toggle('flipped', facingMode === 'user');
-
         cameraInstance = new Camera(videoElement, {
-          onFrame: async () => await hands.send({ image: videoElement }),
+          onFrame: async () => {
+            const now = performance.now();
+            if (isProcessingFrame || now - lastProcessedAt < PROCESS_EVERY_MS) return;
+            isProcessingFrame = true;
+            lastProcessedAt = now;
+            await hands.send({ image: videoElement });
+          },
           width: 640,
           height: 480
         });
 
         cameraInstance.start();
-        currentFacingMode = facingMode;
       } catch (error) {
-        console.warn(`⚠️ Could not access ${facingMode} camera:`, error);
+        console.warn(`Could not access ${facingMode} camera:`, error);
+
+        // Fallback to the opposite camera if the first one fails.
         if (facingMode === 'environment') {
-          // Retry with front camera
-          startCamera('user');
+          currentFacingMode = 'user';
+          await startCamera('user');
         } else {
-          alert("🚫 Unable to access camera. Please check your device's permissions.");
+          loadingSpinner.style.display = 'none';
+          setTranslation('Camera Error', 'Please allow camera access in your browser settings');
+          alert("Unable to access camera. Please check your device's permissions.");
         }
       }
     }
 
-    videoElement.addEventListener('loadedmetadata', () => {
-      canvasElement.width = videoElement.videoWidth;
-      canvasElement.height = videoElement.videoHeight;
+    toggleBtn.addEventListener('click', async () => {
+      const nextMode = currentFacingMode === 'user' ? 'environment' : 'user';
+      await startCamera(nextMode);
     });
 
-    toggleBtn.addEventListener('click', () => {
-      const nextMode = currentFacingMode === 'user' ? 'environment' : 'user';
-      startCamera(nextMode);
+    window.addEventListener('beforeunload', () => {
+      stopCurrentCamera();
     });
 
     startCamera(currentFacingMode);
   </script>
 </body>
 </html>
-
